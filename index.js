@@ -1,25 +1,32 @@
-var express = require("express");
-var app = express();
-var PORT = 3000;
+const express = require("express");
+const app = express();
+const PORT = 3000;
 
-const SneaksAPI = require('sneaks-api');
+const SneaksAPI = require("sneaks-api");
 const sneaks = new SneaksAPI();
 
-var mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://jb:Feli2908@cluster0.di2b3ac.mongodb.net/Sneaks', { useNewUrlParser: true });
-// const { shoesModel } = mongoose.models
-const shoesModel = require('./models/shoesModel.js')
-// sneaks.getProducts("Yeezy Cinder", 10, function(err, products){
-//  console.log(products)
-// })
+const mongoose = require("mongoose");
+mongoose.connect(
+  "mongodb+srv://jb:Feli2908@cluster0.di2b3ac.mongodb.net/Sneaks",
+  { useNewUrlParser: true }
+);
+
+const shoesModel = require("./models/shoesModel.js");
 
 const create = sneaks.getMostPopular(300, function (err, products) {
   console.log(products);
-  products.forEach(el => {
-
-    let { _id, shoeName, colorway, thumbnail, brand, retailPrice, description, styleID } = el
-    let marca = brand
-    
+  products.forEach((el) => {
+    let {
+      _id,
+      shoeName,
+      colorway,
+      thumbnail,
+      brand,
+      retailPrice,
+      description,
+      styleID,
+    } = el;
+    let marca = brand;
     shoesModel.create({
       nombre: shoeName,
       descripcion: description,
@@ -31,19 +38,14 @@ const create = sneaks.getMostPopular(300, function (err, products) {
       stock: [
         {
           num: 38,
-          cant: 50
-        }]
-    })
-
+          cant: 50,
+        },
+      ],
+    });
   });
-
-})
-
-
+});
 
 app.listen(PORT, function (err) {
   if (err) console.log(err);
   console.log("Server listening on PORT", PORT);
 });
-
-
