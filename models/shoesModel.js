@@ -2,14 +2,19 @@ var mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const shoesSchema = new Schema({
-	nombre: String,
-	descripcion: String,
+	name: { type: String, required: true, unique: true },
+	description: { type: String, required: true },
 	color: String,
-	imagen: String,
-	marca: String,
-	precio: String,
+	image: String,
+	brand: String,
+	price: String,
 	styleID: String,
-	stock: Array,
+	stock: [
+		{
+			size: { type: Number, required: true },
+			q: { type: Number, required: true },
+		},
+	],
 });
 
 const shoesModel = mongoose.model("shoe", shoesSchema);
