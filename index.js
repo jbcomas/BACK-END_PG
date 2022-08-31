@@ -1,97 +1,99 @@
-const express = require("express");
-const app = express();
-const PORT = 3000;
+const PORT = 3001;
+const server = require("./app.js");
+const { conn } = require("./db.js");
+// const SneaksAPI = require("sneaks-api");
+// const sneaks = new SneaksAPI();
+// const mongoose = require("mongoose");
+// mongoose
+//   .connect("mongodb://localhost:27017/", {
+//     useNewUrlParser: true,
+//   })
+//   .then(() => console.log("\n", "connect db", "\n"));
+// const shoesModel = require("./models/shoesModel.js");
+// const usersModel = require("./models/usersModel.js");
+// const brandsModel = require("./models/brandsModel.js");
+// const { default: mongoose } = require("mongoose");
 
-const SneaksAPI = require("sneaks-api");
-const sneaks = new SneaksAPI();
+// const create = sneaks.getMostPopular(300, function (err, products) {
+// 	products.forEach((el) => {
+// 		let {
+// 			shoeName,
+// 			colorway,
+// 			thumbnail,
+// 			brand,
+// 			retailPrice,
+// 			description,
+// 		} = el;
+// 		description = description.trim();
+// 		brand = brand.toLowerCase().trim();
 
-const mongoose = require("mongoose");
-mongoose
-	.connect("mongodb://localhost:27017/", {
-		useNewUrlParser: true,
-	})
-	.then(() => console.log("\n", "connect db", "\n"));
+// 		(!shoeName.includes("Hoodie" && "Bag")) && (brand !== "off-white" && brand !== "burberry" && brand != "lego" && brand != "palm angels") &&
+// 			shoesModel.create({
+// 				name: shoeName,
+// 				description:
+// 					description !== "" ? description : "Shoes without description",
+// 				color: colorway !== "" ? colorway : "white",
+// 				image: thumbnail,
+// 				brand: brand,
+// 				price: retailPrice,
+// 				stock: [
+// 					{
+// 						size: 34,
+// 						q: 50,
+// 					},
+// 					{
+// 						size: 35,
+// 						q: 50,
+// 					},
+// 					{
+// 						size: 36,
+// 						q: 50,
+// 					},
+// 					{
+// 						size: 37,
+// 						q: 50,
+// 					},
+// 					{
+// 						size: 38,
+// 						q: 50,
+// 					},
+// 					{
+// 						size: 39,
+// 						q: 50,
+// 					},
+// 					{
+// 						size: 40,
+// 						q: 50,
+// 					},
+// 					{
+// 						size: 41,
+// 						q: 50,
+// 					},
+// 					{
+// 						size: 42,
+// 						q: 50,
+// 					},
+// 				],
+// 			})
+// 		brandsModel.create(
+// 			{
+// 				name: brand,
+// 			},
+// 			function (err) {
+// 				if (err) return console.error(err);
+// 			}
+// 		)
+// 	});
+// });
 
-const shoesModel = require("./models/shoesModel.js");
-const usersModel = require("./models/usersModel.js");
-const brandsModel = require("./models/brandsModel.js");
-
-const create = sneaks.getMostPopular(300, function (err, products) {
-	products.forEach((el) => {
-		let {
-			shoeName,
-			colorway,
-			thumbnail,
-			brand,
-			retailPrice,
-			description,
-		} = el;
-		description = description.trim();
-		brand = brand.toLowerCase().trim();
-
-
-		(!shoeName.includes("Hoodie" && "Bag")) && (brand !== "off-white" && brand !== "burberry" && brand != "lego" && brand != "palm angels") &&
-			shoesModel.create({
-				name: shoeName,
-				description:
-					description !== "" ? description : "Shoes without description",
-				color: colorway !== "" ? colorway : "white",
-				image: thumbnail,
-				brand: brand,
-				price: retailPrice,
-				stock: [
-					{
-						size: 34,
-						q: 50,
-					},
-					{
-						size: 35,
-						q: 50,
-					},
-					{
-						size: 36,
-						q: 50,
-					},
-					{
-						size: 37,
-						q: 50,
-					},
-					{
-						size: 38,
-						q: 50,
-					},
-					{
-						size: 39,
-						q: 50,
-					},
-					{
-						size: 40,
-						q: 50,
-					},
-					{
-						size: 41,
-						q: 50,
-					},
-					{
-						size: 42,
-						q: 50,
-					},
-				],
-			})
-		brandsModel.create(
-			{
-				name: brand,
-			},
-			function (err) {
-				if (err) return console.error(err);
-			}
-		)
-	});
-});
-
-
-
-app.listen(PORT, function (err) {
-	if (err) console.log(err);
-	console.log("Server listening on PORT", PORT);
+// server.listen(PORT, function (err) {
+//   if (err) console.log(err);
+//   console.log("Server listening on PORT", PORT);
+// });
+// console.log(mongoose.__driver.getConnection());
+// console.log(mongoose.connections[0]._connectionOptions);
+conn.syncIndexes().then(() => {
+  server.listen(PORT, () => {
+    console.log("%s listening at 3001"); // eslint-disable-line no-console
+  });
 });
