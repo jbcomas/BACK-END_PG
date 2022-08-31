@@ -67,6 +67,7 @@ const getAllBrand = async () => {
     console.error("Error in getAllBrand:", error);
   }
 };
+
 const getAllUsers = async () => {
   try {
     const allUsers = await usersModel
@@ -111,23 +112,23 @@ const deleteShoe = async (id) => {
 };
 
 const getBrandId = async (id) => {
- try {
-   const brand = await brandsModel.findById(id);
-   if (brand) return [brand];
-   return "Brand not found";
- } catch (error) {
-   console.error("Error in getById:", error);
- }
+  try {
+    const brand = await brandsModel.findById(id);
+    if (brand) return [brand];
+    return "Brand not found";
+  } catch (error) {
+    console.error("Error in getById:", error);
+  }
 };
 
 const deleteBrandId = async (id) => {
- try {
-   const deletedBrand = await brandsModel.deleteOne({ _id: id });
-   if (deletedBrand) return "Brand deleted";
-   return "Brand not found";
- } catch (error) {
-   console.error("Error in deleteBrandId:", error);
- }
+  try {
+    const deletedBrand = await brandsModel.deleteOne({ _id: id });
+    if (deletedBrand) return "Brand deleted";
+    return "Brand not found";
+  } catch (error) {
+    console.error("Error in deleteBrandId:", error);
+  }
 };
 module.exports = {
   createUser,
@@ -138,5 +139,5 @@ module.exports = {
   createShoe,
   deleteShoe,
   getBrandId,
-  deleteBrandId
+  deleteBrandId,
 };
