@@ -152,6 +152,25 @@ const updateShoe = async (id, shoe) => {
 	}
 };
 
+const getBrandId = async (id) => {
+  try {
+    const brand = await brandsModel.findById(id);
+    if (brand) return [brand];
+    return "Brand not found";
+  } catch (error) {
+    console.error("Error in getById:", error);
+  }
+};
+
+const deleteBrandId = async (id) => {
+  try {
+    const deletedBrand = await brandsModel.deleteOne({ _id: id });
+    if (deletedBrand) return "Brand deleted";
+    return "Brand not found";
+  } catch (error) {
+    console.error("Error in deleteBrandId:", error);
+  }
+};
 module.exports = {
 	createUser,
 	getAllShoes,
@@ -160,6 +179,8 @@ module.exports = {
 	getById,
 	createShoe,
 	deleteShoe,
+  getBrandId,
+  deleteBrandId,
 	updateShoe,
   createBrand,
   getByName,
