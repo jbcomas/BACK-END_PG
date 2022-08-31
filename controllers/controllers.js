@@ -3,33 +3,33 @@ const usersModel = require("../models/usersModel.js");
 const brandsModel = require("../models/brandsModel.js");
 
 const createUser = async (
-  firstname,
-  lastname,
-  email,
-  manager,
-  image,
-  status,
-  password
+	firstname,
+	lastname,
+	email,
+	manager,
+	image,
+	status,
+	password
 ) => {
-  try {
-    usersModel.create(
-      {
-        firstname,
-        lastname,
-        email,
-        manager,
-        image,
-        status,
-        password,
-      },
-      function (err) {
-        if (err) return console.error(err);
-      }
-    );
-    return "Users Create";
-  } catch (error) {
-    console.error("Error in createUser:", error);
-  }
+	try {
+		usersModel.create(
+			{
+				firstname,
+				lastname,
+				email,
+				manager,
+				image,
+				status,
+				password,
+			},
+			function (err) {
+				if (err) return console.error(err);
+			}
+		);
+		return "Users Create";
+	} catch (error) {
+		console.error("Error in createUser:", error);
+	}
 };
 
 const getAllShoes = async (brand) => {
@@ -52,13 +52,13 @@ const getAllShoes = async (brand) => {
 };
 
 const getById = async (id) => {
-  try {
-    const shoe = await shoesModel.findById(id);
-    if (shoe) return [shoe];
-    return "shoe not found";
-  } catch (error) {
-    console.error("Error in getById:", error);
-  }
+	try {
+		const shoe = await shoesModel.findById(id);
+		if (shoe) return [shoe];
+		return "shoe not found";
+	} catch (error) {
+		console.error("Error in getById:", error);
+	}
 };
 
 const getAllBrand = async () => {
@@ -73,17 +73,18 @@ const getAllBrand = async () => {
     console.error("Error in getAllBrand:", error); 
   }
 };
+
 const getAllUsers = async () => {
-  try {
-    const allUsers = await usersModel
-      .find(function (err, user) {
-        if (err) return console.error(err);
-      })
-      .clone();
-    return allUsers;
-  } catch (error) {
-    console.error("Error in getAllUsers:", error);
-  }
+	try {
+		const allUsers = await usersModel
+			.find(function (err, user) {
+				if (err) return console.error(err);
+			})
+			.clone();
+		return allUsers;
+	} catch (error) {
+		console.error("Error in getAllUsers:", error);
+	}
 };
 const createShoe = (name, description, color, image, brand, price, stock) => {
   try {
@@ -140,14 +141,26 @@ const getByName = async (shoe) => {
     console.log("Error in getByName:", error);
   }
 };
+
+const updateShoe = async (id, shoe) => {
+	try {
+		await shoesModel.findByIdAndUpdate(id, shoe);
+		let update = await shoesModel.findById(id);
+		return update
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 module.exports = {
-  createUser,
-  getAllShoes,
-  getAllBrand,
-  getAllUsers,
-  getById,
-  createShoe,
-  deleteShoe,
+	createUser,
+	getAllShoes,
+	getAllBrand,
+	getAllUsers,
+	getById,
+	createShoe,
+	deleteShoe,
+	updateShoe,
   createBrand,
   getByName,
 };
