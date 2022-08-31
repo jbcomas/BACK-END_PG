@@ -4,6 +4,7 @@ const {
   getById,
   createShoe,
   deleteShoe,
+  getBrandId
 } = require("../controllers/controllers.js");
 const router = Router();
 
@@ -29,6 +30,13 @@ router.post("/", (req, res) => {
   return res.status(200).send(create);
 });
 
+router.get("/brand/:id", async (req, res) => {
+ const { id } = req.params;
+ const brandId = await getBrandId(id);
+ if (brandId.length) return res.send(brandId);
+ return res.status(404).res.send("Error in brandId");
+});
+
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const shoeId = await getById(id);
@@ -46,5 +54,7 @@ router.delete("/:id", async (req, res) => {
     res.status(200).send(deleted);
   }
 });
+
+
 
 module.exports = router;

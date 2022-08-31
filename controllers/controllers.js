@@ -110,6 +110,16 @@ const deleteShoe = async (id) => {
   }
 };
 
+const getBrandId = async (id) => {
+ try {
+   const brand = await brandsModel.findById(id);
+   if (brand) return [brand];
+   return "Brand not found";
+ } catch (error) {
+   console.error("Error in getById:", error);
+ }
+};
+
 module.exports = {
   createUser,
   getAllShoes,
@@ -118,4 +128,5 @@ module.exports = {
   getById,
   createShoe,
   deleteShoe,
+  getBrandId
 };

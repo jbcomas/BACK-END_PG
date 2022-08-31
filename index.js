@@ -12,7 +12,6 @@ const { conn } = require("./db.js");
 // const shoesModel = require("./models/shoesModel.js");
 // const usersModel = require("./models/usersModel.js");
 // const brandsModel = require("./models/brandsModel.js");
-// const { default: mongoose } = require("mongoose");
 
 // const create = sneaks.getMostPopular(300, function (err, products) {
 // 	products.forEach((el) => {
@@ -86,12 +85,6 @@ const { conn } = require("./db.js");
 // 	});
 // });
 
-// server.listen(PORT, function (err) {
-//   if (err) console.log(err);
-//   console.log("Server listening on PORT", PORT);
-// });
-// console.log(mongoose.__driver.getConnection());
-// console.log(mongoose.connections[0]._connectionOptions);
 conn.syncIndexes().then(() => {
   server.listen(PORT, () => {
     console.log("%s listening at 3001"); // eslint-disable-line no-console
