@@ -15,7 +15,7 @@ const shoesSchema = new Schema({
     },
   ],
 });
-// { typeKey: '$type' }
+
 const shoesModel = mongoose.model("shoe", shoesSchema);
 
 module.exports = shoesModel;

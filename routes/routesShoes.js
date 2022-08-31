@@ -4,13 +4,22 @@ const {
   getById,
   createShoe,
   deleteShoe,
+  getByName,
 } = require("../controllers/controllers.js");
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const allShoes = await getAllShoes();
-  if (allShoes.length) return res.send(allShoes);
-  return res.status(404).res.send("Error in AllShoes");
+  const { brand, name } = req.query;
+  const allShoes = await getAllShoes(brand);
+  if (name) {
+    const shoeName = await getByName(name);
+    return res.send(shoeName);
+  }
+  if (brand) {
+    return res.send(allShoes);
+  }
+
+  return res.send(allShoes);
 });
 
 router.post("/", (req, res) => {
@@ -28,7 +37,6 @@ router.post("/", (req, res) => {
 
   return res.status(200).send(create);
 });
-
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const shoeId = await getById(id);
