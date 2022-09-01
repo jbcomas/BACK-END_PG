@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
-mongoose
-  .connect(
-    "mongodb+srv://m001-student:m001-mongodb-basics@sandbox.yjdlxrm.mongodb.net/sneakers",
-    {
-      useNewUrlParser: true,
-    }
-  )
-  .then(() => console.log("\n", "connect db", "\n"));
+const { MONGODB } = process.env;
+mongoose.connect(MONGODB, {
+  useNewUrlParser: true,
+});
+
+mongoose.connection
+  .once("open", () => {
+    console.log("\n", "connect db", "\n");
+  })
+  .on("error", (error) => {
+    console.log("\n", "Error in connect db:", error, "\n");
+  });
 
 module.exports = module.exports = {
   ...mongoose.models,

@@ -1,6 +1,6 @@
-const PORT = 3001;
+require("dotenv").config();
 const server = require("./app.js");
-const { conn } = require("./db.js");
+const { PORT } = process.env;
 // const SneaksAPI = require("sneaks-api");
 // const sneaks = new SneaksAPI();
 
@@ -13,8 +13,9 @@ const { conn } = require("./db.js");
 //     let { shoeName, colorway, thumbnail, brand, retailPrice, description } = el;
 //     description = description.trim();
 //     brand = brand.toLowerCase().trim();
-
-//     !shoeName.includes("Hoodie" && "Bag") &&
+//     shoeName = shoeName.toLowerCase().trim();
+//     !shoeName.includes("hoodie") &&
+//       !shoeName.includes("bag") &&
 //       brand !== "off-white" &&
 //       brand !== "burberry" &&
 //       brand != "lego" &&
@@ -57,8 +58,6 @@ const { conn } = require("./db.js");
 //   });
 // });
 
-conn.syncIndexes().then(() => {
-  server.listen(PORT, () => {
-    console.log("%s listening at 3001"); // eslint-disable-line no-console
-  });
+server.listen(PORT, () => {
+  console.log("%s listening at 3001");
 });

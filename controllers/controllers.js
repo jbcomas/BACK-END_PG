@@ -35,9 +35,10 @@ const createUser = async (
 const getAllShoes = async (brand) => {
   try {
     if (brand) {
-      const filterBrand = await shoesModel.find({ brand: brand });
+      let aux = brand.toLowerCase();
+      const filterBrand = await shoesModel.find({ brand: aux });
       if (filterBrand) return filterBrand;
-      return "shoes not found";
+      return "Shoes not found";
     } else {
       const allShoes = await shoesModel
         .find(function (err, shoes) {
@@ -153,13 +154,12 @@ const getByName = async (shoe) => {
 const updateShoe = async (id, shoe) => {
   try {
     if (id.length !== 24) {
-      console.log(id);
       return "Shoe doesn't exist";
     }
     await shoesModel.findByIdAndUpdate(id, shoe);
     let update = await shoesModel.findById(id);
     createBrand(shoe.brand);
-    if (update !== undefined && update !== null) return update;
+    if (update !== undefined && update !== null) return [update];
     return "Shoe doesn't exist: Object empty";
   } catch (error) {
     console.log(error);
@@ -185,6 +185,17 @@ const deleteBrandId = async (id) => {
     console.error("Error in deleteBrandId:", error);
   }
 };
+
+const updateBrand = async (id, name) => {
+  try {
+    await brandsModel.findByIdAndUpdate(id, name);
+    let update = await brandsModel.findById(id);
+    return [update];
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   createUser,
   getAllShoes,
@@ -198,4 +209,5 @@ module.exports = {
   updateShoe,
   createBrand,
   getByName,
+  updateBrand,
 };
