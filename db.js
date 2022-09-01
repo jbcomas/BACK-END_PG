@@ -10,7 +10,7 @@ mongoose
       console.log("\n", "connect db", "\n");
     })
     .on('error',error =>{
-      console.log("\n", "Erro in connect db:",error, "\n");
+      console.log("\n", "Error in connect db:",error, "\n");
     })
 module.exports = module.exports = {
   ...mongoose.models,

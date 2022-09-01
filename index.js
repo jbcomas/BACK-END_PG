@@ -1,9 +1,9 @@
 require('dotenv').config()
 const {PORT} = process.env;
 
-// const PORT = 3001;
+
 const server = require("./app.js");
-const { conn } = require("./db.js");
+// const { conn } = require("./db.js");
 
 // const SneaksAPI = require("sneaks-api");
 // const sneaks = new SneaksAPI();
@@ -82,8 +82,8 @@ const { conn } = require("./db.js");
 //   });
 // });
 
-conn.syncIndexes().then(() => {
+
   server.listen(PORT, () => {
     console.log("%s listening at 3001"); // eslint-disable-line no-console
   });
-});
+
