@@ -1,12 +1,8 @@
-require('dotenv').config()
-const {PORT} = process.env;
-
-
+require("dotenv").config();
 const server = require("./app.js");
-// const { conn } = require("./db.js");
-
-// const SneaksAPI = require("sneaks-api");
-// const sneaks = new SneaksAPI();
+const { conn } = require("./db.js");
+const SneaksAPI = require("sneaks-api");
+const sneaks = new SneaksAPI();
 
 // const shoesModel = require("./models/shoesModel.js");
 // const usersModel = require("./models/usersModel.js");
@@ -18,8 +14,8 @@ const server = require("./app.js");
 //     description = description.trim();
 //     brand = brand.toLowerCase().trim();
 //     shoeName = shoeName.toLowerCase().trim();
-
-//     !shoeName.includes("Hoodie" && "Bag") &&
+//     !shoeName.includes("hoodie") &&
+//       !shoeName.includes("bag") &&
 //       brand !== "off-white" &&
 //       brand !== "burberry" &&
 //       brand != "lego" &&
@@ -38,31 +34,11 @@ const server = require("./app.js");
 //             q: 50,
 //           },
 //           {
-//             size: 35,
-//             q: 50,
-//           },
-//           {
-//             size: 36,
-//             q: 50,
-//           },
-//           {
 //             size: 37,
 //             q: 50,
 //           },
 //           {
-//             size: 38,
-//             q: 50,
-//           },
-//           {
-//             size: 39,
-//             q: 50,
-//           },
-//           {
 //             size: 40,
-//             q: 50,
-//           },
-//           {
-//             size: 41,
 //             q: 50,
 //           },
 //           {
@@ -82,8 +58,6 @@ const server = require("./app.js");
 //   });
 // });
 
-
-  server.listen(PORT, () => {
-    console.log("%s listening at 3001"); // eslint-disable-line no-console
-  });
-
+server.listen(PORT, () => {
+  console.log("%s listening at 3001");
+});

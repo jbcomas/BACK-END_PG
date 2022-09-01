@@ -2,7 +2,8 @@ const { Router } = require("express");
 const {
   getAllBrand,
   getBrandId,
-  deleteBrandId
+  deleteBrandId,
+  updateBrand,
 } = require("../controllers/controllers");
 const router = Router();
 
@@ -28,4 +29,15 @@ router.delete("/:id", async (req, res) => {
   }
   return res.status(404).res.send("Error in brandId");
 });
+
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const name = req.body;
+  if (name) {
+    const update = await updateBrand(id, name);
+    if (update) return res.status(200).send(update);
+    return res.status(404).send("Error in search brand");
+  }
+});
+
 module.exports = router;
