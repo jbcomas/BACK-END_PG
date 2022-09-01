@@ -1,12 +1,12 @@
 const PORT = 3001;
 const server = require("./app.js");
 const { conn } = require("./db.js");
-const SneaksAPI = require("sneaks-api");
-const sneaks = new SneaksAPI();
+// const SneaksAPI = require("sneaks-api");
+// const sneaks = new SneaksAPI();
 
-const shoesModel = require("./models/shoesModel.js");
-const usersModel = require("./models/usersModel.js");
-const brandsModel = require("./models/brandsModel.js");
+// const shoesModel = require("./models/shoesModel.js");
+// const usersModel = require("./models/usersModel.js");
+// const brandsModel = require("./models/brandsModel.js");
 
 // const create = sneaks.getMostPopular(300, function (err, products) {
 //   products.forEach((el) => {
@@ -33,31 +33,11 @@ const brandsModel = require("./models/brandsModel.js");
 //             q: 50,
 //           },
 //           {
-//             size: 35,
-//             q: 50,
-//           },
-//           {
-//             size: 36,
-//             q: 50,
-//           },
-//           {
 //             size: 37,
 //             q: 50,
 //           },
 //           {
-//             size: 38,
-//             q: 50,
-//           },
-//           {
-//             size: 39,
-//             q: 50,
-//           },
-//           {
 //             size: 40,
-//             q: 50,
-//           },
-//           {
-//             size: 41,
 //             q: 50,
 //           },
 //           {
