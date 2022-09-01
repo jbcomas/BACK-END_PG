@@ -14,13 +14,13 @@ const { PORT } = process.env;
 //     description = description.trim();
 //     brand = brand.toLowerCase().trim();
 //     shoeName = shoeName.toLowerCase().trim();
-//     !shoeName.includes("hoodie") &&
+//     if(!shoeName.includes("hoodie") &&
 //       !shoeName.includes("bag") &&
 //       brand !== "off-white" &&
 //       brand !== "burberry" &&
 //       brand != "lego" &&
-//       brand != "palm angels" &&
-//       shoesModel.create({
+//       brand != "palm angels"){
+//        shoesModel.create({
 //         name: shoeName,
 //         description:
 //           description !== "" ? description : "Shoes without description",
@@ -55,6 +55,7 @@ const { PORT } = process.env;
 //         if (err) return console.error(err);
 //       }
 //     );
+//       }
 //   });
 // });
 
