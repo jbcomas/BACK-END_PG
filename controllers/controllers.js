@@ -35,7 +35,8 @@ const createUser = async (
 const getAllShoes = async (brand) => {
   try {
     if (brand) {
-      const filterBrand = await shoesModel.find({ brand: brand.toLowerCase() });
+      let aux = brand.toLowerCase()
+      const filterBrand = await shoesModel.find({ brand: aux });
       if (filterBrand) return filterBrand;
       return "shoes not found";
     } else {
