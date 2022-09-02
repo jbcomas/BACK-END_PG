@@ -143,8 +143,9 @@ const createBrand = async (brand) => {
 
 const getByName = async (shoe) => {
   try {
-    const shoes = await shoesModel.find({ name: shoe });
-    if (shoes) return shoes;
+    
+    const shoes = await shoesModel.find({"name": {$regex:`.*${shoe}`}});
+    if (shoes.length) return shoes;
     return "shoe not found";
   } catch (error) {
     console.log("Error in getByName:", error);
