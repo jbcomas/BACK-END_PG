@@ -105,9 +105,9 @@ const createShoe = (name, description, color, image, brand, price, stock) => {
       }
     );
     createBrand(brand);
-    return "Shoe Create";
+    return "Shoe Created";
   } catch (error) {
-    console.error("Error in createProduct:", error);
+    console.error("Error in createShoe:", error);
   }
 };
 
@@ -135,7 +135,7 @@ const createBrand = async (brand) => {
         if (err) return console.error(err);
       }
     );
-    return "Brand Create";
+    return "Brand Created";
   } catch (error) {
     console.error("Error in createBrand:", error);
   }
@@ -143,9 +143,9 @@ const createBrand = async (brand) => {
 
 const getByName = async (shoe) => {
   try {
-    const shoes = await shoesModel.find({ name: shoe });
-    if (shoes) return shoes;
-    return "shoe not found";
+    const shoes = await shoesModel.find({ name: { $regex: `.*${shoe}` } });
+    if (shoes.length) return shoes;
+    return "Shoe not found";
   } catch (error) {
     console.log("Error in getByName:", error);
   }
@@ -172,7 +172,7 @@ const getBrandId = async (id) => {
     if (brand) return [brand];
     return "Brand not found";
   } catch (error) {
-    console.error("Error in getById:", error);
+    console.error("Error in getBrandId:", error);
   }
 };
 
