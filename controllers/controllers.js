@@ -1,6 +1,8 @@
 const shoesModel = require("../models/shoesModel.js");
 const usersModel = require("../models/usersModel.js");
 const brandsModel = require("../models/brandsModel.js");
+const cartModel = require("../models/cartModel.js");
+// const db = require("../db.json");
 
 const createUser = async (
   firstname,
@@ -143,8 +145,7 @@ const createBrand = async (brand) => {
 
 const getByName = async (shoe) => {
   try {
-    
-    const shoes = await shoesModel.find({"name": {$regex:`.*${shoe}`}});
+    const shoes = await shoesModel.find({ name: { $regex: `.*${shoe}` } });
     if (shoes.length) return shoes;
     return "shoe not found";
   } catch (error) {
@@ -189,12 +190,74 @@ const deleteBrandId = async (id) => {
 
 const updateBrand = async (id, name) => {
   try {
-    await brandsModel.findByIdAndUpdate(id, name);
-    let update = await brandsModel.findById(id);
-    return [update];
+    const brandUpdate = await brandsModel.findByIdAndUpdate(id, name, {
+      new: true,
+    });
+    return [brandUpdate];
   } catch (error) {
     console.log(error);
   }
+};
+const getCart = async () => {
+  const cart = await cartModel
+    .find(function (err, result) {})
+    .clone()
+    .populate();
+  if (cart) return cart;
+  return "empty car";
+};
+
+const addShoeCart = async (id, ident, amount) => {
+  try {
+    const shoe = await shoesModel.findById({ _id: id });
+    const { name, image, color, brand, price } = shoe;
+    const shoeInCart = await cartModel.findOne({ name });
+
+    if (!shoeInCart) {
+      cartModel.create(
+        {
+          name,
+          color,
+          image,
+          brand,
+          price,
+          amount,
+          size: ident,
+        },
+        function (err) {
+          if (err) return console.error(err);
+        }
+      );
+
+      await shoesModel.updateOne(
+        { _id: id, "stock._id": ident },
+        { $set: { "stock.$.q": amount, inCart: true } }
+      );
+   
+      return "cargado al carrito";
+    }
+    if (shoeInCart) return "El producto ya esta en el carrito";
+  } catch (error) {
+    console.error("Error in addShoeCart:", error);
+  }
+};
+
+const deleteProduct = async (id) => {
+  const { name } = await shoesModel.findByIdAndUpdate(id, {
+    inCart: false,
+  });
+  await cartModel.findOneAndRemove({ name });
+  return "producto eliminado";
+};
+
+const putProduct = async (id, ident, amount) => {
+  const { name } = await shoesModel.findById({ _id: id });
+  await shoesModel.updateOne(
+    { _id: id, "stock._id": ident },
+    { $set: { "stock.$.q": amount } }
+  );
+  await cartModel.findOneAndUpdate({ name: name }, { amount: amount });
+  return "producto modificado";
 };
 
 module.exports = {
@@ -211,4 +274,8 @@ module.exports = {
   createBrand,
   getByName,
   updateBrand,
+  addShoeCart,
+  putProduct,
+  getCart,
+  deleteProduct,
 };
