@@ -26,7 +26,7 @@ const createUser = async (
         if (err) return console.error(err);
       }
     );
-    return "Users Create";
+    return "User created successfully";
   } catch (error) {
     console.error("Error in createUser:", error);
   }
@@ -196,6 +196,44 @@ const updateBrand = async (id, name) => {
   }
 };
 
+const updateUser = async (id, user) => {
+  try {
+    if (id.length !== 24) {
+      return "User doesn't exist";
+    }
+    await usersModel.findByIdAndUpdate(id, user);
+    let update = await usersModel.findById(id);
+    if (update !== undefined && update !== null) return [update];
+    return "User doesn't exist: Object empty";
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteUser = async (id) => {
+  try {
+    if (id.length !== 24) {
+      console.log(id);
+      return "User never existed";
+    }
+    const deleted = await usersModel.findByIdAndDelete(id);
+    if (deleted !== undefined && deleted !== null) return "User was deleted";
+    return "User never existed: Object empty";
+  } catch (error) {
+    console.error("Error in deleteUser:", error);
+  }
+};
+
+const getUserById = async (id) => {
+  try {
+    const user = await usersModel.findById(id);
+    if (user) return [user];
+    return "User not found";
+  } catch (error) {
+    console.error("Error in getUserById:", error);
+  }
+};
+
 module.exports = {
   createUser,
   getAllShoes,
@@ -210,4 +248,7 @@ module.exports = {
   createBrand,
   getByName,
   updateBrand,
+  updateUser,
+  deleteUser,
+  getUserById,
 };

@@ -41,7 +41,7 @@ router.post("/", (req, res) => {
     price,
     stock
   );
-  if (name === "" || description === "") {
+  if (name === "" || description === "" || brand === "") {
     return res.status(400).json({ error: "Name or description is empty" });
   }
   res.status(200).send(create);
@@ -70,6 +70,13 @@ router.delete("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const shoe = req.body;
+  if (
+   shoe.name === "" ||
+   shoe.description === "" ||
+   shoe.brand === "" 
+  ) {
+   return res.status(400).json({ error: "Some mandatory info is empty" });
+  }
   const update = await updateShoe(id, shoe);
   res.status(200).send(update);
 });
