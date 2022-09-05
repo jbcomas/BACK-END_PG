@@ -7,13 +7,14 @@ const shoesSchema = new Schema({
   color: { type: String },
   image: { type: String },
   brand: { type: String },
-  price: { type: String },
+  price: { type: Number },
   stock: [
     {
       size: { type: Number, required: true },
       q: { type: Number, required: true },
     },
   ],
+  inCart: { type: Boolean, default: false },
 });
 
 const shoesModel = mongoose.model("shoe", shoesSchema);
