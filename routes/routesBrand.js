@@ -4,6 +4,7 @@ const {
   getBrandId,
   deleteBrandId,
   updateBrand,
+  createBrand
 } = require("../controllers/controllers");
 const router = Router();
 
@@ -38,6 +39,15 @@ router.put("/:id", async (req, res) => {
     if (update) return res.status(200).send(update);
     return res.status(404).send("Error in search brand");
   }
+});
+
+router.post("/", (req, res) => {
+ let { name } = req.body;
+ createBrand(name)
+ if (name === "") {
+   return res.status(400).json({ error: "Brand name is empty" });
+ }
+ res.status(200).send("Brand created");
 });
 
 module.exports = router;
