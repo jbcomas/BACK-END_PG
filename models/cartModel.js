@@ -1,14 +1,12 @@
 var mongoose = require("mongoose");
-const {userSchema} = require("../models/usersModel.js");
-const {shoesSchema} = require("../models/shoesModel.js");
+const shoesModel = require("./shoesModel");
+const usersModel = require("./usersModel");
 
 const { Schema } = mongoose;
 
 const cartSchema = new Schema({
-  usersModel_id: {type: String},
-  picks: [{ type: String }],
-  userRelation: userSchema,
-  shoeRelation: shoesSchema
+  usersModel_id: { type: Schema.Types.ObjectId, ref: usersModel },
+  picks: [{ type: Schema.Types.ObjectId, ref: shoesModel }],
 });
 
 const cartModel = mongoose.model("cart", cartSchema);

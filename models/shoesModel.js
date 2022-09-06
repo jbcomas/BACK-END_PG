@@ -20,4 +20,4 @@ const shoesSchema = new Schema({
 
 const shoesModel = mongoose.model("shoe", shoesSchema);
 
-module.exports = {shoesModel, shoesSchema};
+module.exports = shoesModel;
