@@ -15,8 +15,9 @@ const shoesSchema = new Schema({
     },
   ],
   inCart: { type: Boolean, default: false },
+  onSale: { type: Boolean, default: false },
 });
 
 const shoesModel = mongoose.model("shoe", shoesSchema);
 
-module.exports = shoesModel;
+module.exports = {shoesModel, shoesSchema};

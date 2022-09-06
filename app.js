@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const shoes = require("./routes/routesShoes.js");
 const brands = require("./routes/routesBrand.js");
 const users = require("./routes/routesUsers.js");
+const carrito = require("./routes/routesCart.js");
 
 const server = express();
 
@@ -28,6 +29,7 @@ server.use((req, res, next) => {
 server.use("/shoes", shoes);
 server.use("/users", users);
 server.use("/brands", brands);
+server.use("/cart", carrito);
 
 // Error catching endware.
 server.use((err, req, res, next) => {
