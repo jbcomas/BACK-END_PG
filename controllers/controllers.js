@@ -2,6 +2,7 @@ const shoesModel = require("../models/shoesModel.js");
 const usersModel = require("../models/usersModel.js");
 const brandsModel = require("../models/brandsModel.js");
 const cartModel = require("../models/cartModel.js");
+const transporter = require("../mailer.js");
 // const db = require("../db.json");
 
 const createUser = async (
@@ -233,7 +234,7 @@ const addShoeCart = async (id, ident, amount) => {
         { _id: id, "stock._id": ident },
         { $set: { "stock.$.q": amount, inCart: true } }
       );
-   
+
       return "cargado al carrito";
     }
     if (shoeInCart) return "El producto ya esta en el carrito";
@@ -298,6 +299,19 @@ const getUserById = async (id) => {
   }
 };
 
+const mailerController = async (email, name, message) => {
+  try {
+    await transporter.sendMail({
+      from: '"Testing Email" <sneaker.paradise.mail@gmail.com>', // sender address
+      to: email, // list of receivers
+      subject: `Testing Email for ${name}`, // Subject line
+      html: `<b>${message}</b>`, // html body
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   createUser,
   getAllShoes,
@@ -319,4 +333,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserById,
+  mailerController,
 };
