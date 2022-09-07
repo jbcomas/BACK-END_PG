@@ -3,7 +3,6 @@ const usersModel = require("../models/usersModel.js");
 const brandsModel = require("../models/brandsModel.js");
 const cartModel = require("../models/cartModel.js");
 const transporter = require("../mailer.js");
-// const db = require("../db.json");
 
 const createUser = async (
   firstname,
@@ -299,14 +298,16 @@ const getUserById = async (id) => {
   }
 };
 
-const mailerController = async (email, name, message) => {
+const mailerController = async (userId, message) => {
   try {
+    const {email, firstname, lastname} = await usersModel.findById({_id: userId})
     await transporter.sendMail({
-      from: '"Testing Email" <sneaker.paradise.mail@gmail.com>', // sender address
-      to: email, // list of receivers
-      subject: `Testing Email for ${name}`, // Subject line
-      html: `<b>${message}</b>`, // html body
+      from: '"Testing Email" <sneaker.paradise.mail@gmail.com>',
+      to: email, 
+      subject: `Testing Email for ${firstname} ${lastname}`,
+      html: `<b>${message}</b>`,
     });
+    return 
   } catch (error) {
     return error;
   }
