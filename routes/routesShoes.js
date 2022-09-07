@@ -6,10 +6,6 @@ const {
   deleteShoe,
   getByName,
   updateShoe,
-  addShoeCart,
-  putProduct,
-  getCart,
-  deleteProduct,
 } = require("../controllers/controllers.js");
 const router = Router();
 
@@ -51,30 +47,7 @@ router.post("/", (req, res) => {
   res.status(200).send(create);
 });
 
-router.get("/cart", async (req, res) => {
 
-  const allCart = await getCart();
-  res.status(200).send(allCart);
-});
-router.post("/cart/:id", async (req, res) => {
-  const { id } = req.params;
-  const { ident, amount } = req.body;
-
-  const addShoe = await addShoeCart(id, ident, amount);
-  res.status(200).send(addShoe);
-});
-
-router.put("/cart/edit/:id", async (req, res) => {
-  const { id } = req.params;
-  const {ident, amount} = req.body;
-  const putShoe = await putProduct(id, ident , amount);
-  res.status(200).send(putShoe);
-});
-router.delete('/cart/:id',async (req, res)=>{
-  const { id }= req.params
-  const deleteCart = await deleteProduct(id)
-  res.status(200).send(deleteCart)
-})
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
