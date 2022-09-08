@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const chalk = require("chalk");
 const {
   getAllShoes,
   getById,
@@ -12,6 +13,9 @@ const {
   deleteProduct,
 } = require("../controllers/controllers.js");
 const router = Router();
+const successChalk = chalk.green;
+const errorChalk = chalk.bold.red;
+const warningChalk = chalk.hex("#FFA500");
 
 router.get("/", async (req, res) => {
   const { brand, name } = req.query;
@@ -19,16 +23,21 @@ router.get("/", async (req, res) => {
     const allShoes = await getAllShoes(brand);
     if (name) {
       const shoeName = await getByName(name);
+      console.log(successChalk("Shoes by name were shown"));
       return res.status(200).send(shoeName);
     }
     if (brand) {
+      console.log(successChalk("Shoes by brand were shown"));
       return res.status(200).send(allShoes);
     }
     if (!name && !brand) {
+      console.log(successChalk("All shoes were shown"));
       return res.status(200).send(allShoes);
     }
+    console.log(errorChalk("Route error!"));
     res.status(404).json({ error: error.message });
   } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
     res.status(404).json({ error: error.message });
   }
 });
@@ -46,35 +55,39 @@ router.post("/", (req, res) => {
     stock
   );
   if (name === "" || description === "" || brand === "") {
+    console.log(errorChalk("Sneaker wasn't created"));
     return res.status(400).json({ error: "Name or description is empty" });
   }
+  console.log(successChalk("New sneaker was created"));
   res.status(200).send(create);
 });
 
 router.get("/cart", async (req, res) => {
-
   const allCart = await getCart();
+  console.log(successChalk("All carts were shown"));
   res.status(200).send(allCart);
 });
+
 router.post("/cart/:id", async (req, res) => {
   const { id } = req.params;
   const { ident, amount } = req.body;
-
   const addShoe = await addShoeCart(id, ident, amount);
   res.status(200).send(addShoe);
 });
 
 router.put("/cart/edit/:id", async (req, res) => {
   const { id } = req.params;
-  const {ident, amount} = req.body;
-  const putShoe = await putProduct(id, ident , amount);
+  const { ident, amount } = req.body;
+  const putShoe = await putProduct(id, ident, amount);
   res.status(200).send(putShoe);
 });
-router.delete('/cart/:id',async (req, res)=>{
-  const { id }= req.params
-  const deleteCart = await deleteProduct(id)
-  res.status(200).send(deleteCart)
-})
+
+router.delete("/cart/:id", async (req, res) => {
+  const { id } = req.params;
+  const deleteCart = await deleteProduct(id);
+  res.status(200).send(deleteCart);
+});
+
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -98,12 +111,8 @@ router.delete("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const shoe = req.body;
-  if (
-   shoe.name === "" ||
-   shoe.description === "" ||
-   shoe.brand === "" 
-  ) {
-   return res.status(400).json({ error: "Some mandatory info is empty" });
+  if (shoe.name === "" || shoe.description === "" || shoe.brand === "") {
+    return res.status(400).json({ error: "Some mandatory info is empty" });
   }
   const update = await updateShoe(id, shoe);
   res.status(200).send(update);
