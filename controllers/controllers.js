@@ -79,11 +79,11 @@ const getAllBrand = async () => {
 
 const getAllUsers = async () => {
   try {
-    const allUsers = await usersModel
-      .find(function (err, user) {
-        if (err) return console.error(err);
-      })
-      .clone();
+    const allUsers = await usersModel.find({}).populate({
+      path: "records.shoeId",
+      select: "name color brand image price",
+    });
+
     return allUsers;
   } catch (error) {
     console.error("Error in getAllUsers:", error);
@@ -200,13 +200,13 @@ const updateBrand = async (id, name) => {
 };
 
 const getCart = async () => {
-try {
-	  const cart = await cartModel.find().clone();
-	  if (cart) return cart;
-	  return "empty cart";
-} catch (error) {
-	console.error("Error in getCart:", error);
-}
+  try {
+    const cart = await cartModel.find().clone();
+    if (cart) return cart;
+    return "empty cart";
+  } catch (error) {
+    console.error("Error in getCart:", error);
+  }
 };
 
 const addShoeCart = async (userId, shoeId, size, q) => {
@@ -234,10 +234,17 @@ const emptyCart = async (id) => {
     const insert = await cartModel.find({ userId: id });
 
     insert?.forEach(async function (shoe) {
+      console.log(shoe.shoe);
       await usersModel.updateOne(
         { _id: id },
         {
-          $push: { records: { purchase: shoe._id } },
+          $push: {
+            records: {
+              shoeId: shoe.shoe,
+              size: shoe.q,
+              q: shoe.q,
+            },
+          },
         }
       );
     });
@@ -267,6 +274,15 @@ const putShoeInCart = async (userId, shoeId, size, q) => {
     return { status: "PUT: Carrito edited" };
   } catch (error) {
     console.error("Error in putShoeInCart:", error);
+  }
+};
+
+const deleteShoeCart = async (id, shoeId) => {
+  try {
+    await cartModel.deleteOne({ userId: id, shoe: shoeId });
+    return { status: "shoe deleted" };
+  } catch (error) {
+    console.error("Error in deleteShoeCart:", error);
   }
 };
 
@@ -300,14 +316,24 @@ const deleteUser = async (id) => {
 
 const getUserById = async (id) => {
   try {
-    const user = await usersModel.findById(id);
+    const user = await usersModel.findById(id).populate({
+      path: "records.shoeId",
+      select: "name color brand image price",
+    });
     if (user) return [user];
     return "User not found";
   } catch (error) {
     console.error("Error in getUserById:", error);
   }
 };
-
+const consoleLog = async () => {
+  try {
+    const aux = await cartModel.find({ _id: "6319f5bf0d6b16fd31848c14" });
+    console.log(aux);
+  } catch (error) {
+    console.error(error);
+  }
+};
 module.exports = {
   createUser,
   getAllShoes,
@@ -330,4 +356,5 @@ module.exports = {
   deleteUser,
   getUserById,
   getCartById,
+  deleteShoeCart,
 };

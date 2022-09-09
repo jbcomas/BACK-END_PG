@@ -5,6 +5,7 @@ const {
   getCartById,
   putShoeInCart,
   emptyCart,
+  deleteShoeCart,
 } = require("../controllers/controllers.js");
 
 const router = Router();
@@ -37,5 +38,10 @@ router.delete("/:id", async (req, res) => {
   const result = await emptyCart(id);
   res.status(200).json(result);
 });
-
+router.delete("/deletecart/:id", async (req, res) => {
+  const { id } = req.params;
+  const { shoeId } = req.body;
+  const result = await deleteShoeCart(id, shoeId);
+  res.status(200).json(result);
+});
 module.exports = router;
