@@ -2,7 +2,7 @@ const shoesModel = require("../models/shoesModel.js");
 const usersModel = require("../models/usersModel.js");
 const brandsModel = require("../models/brandsModel.js");
 const cartModel = require("../models/cartModel.js");
-// const db = require("../db.json");
+const transporter = require("../mailer.js");
 
 const createUser = async (
   firstname,
@@ -326,14 +326,41 @@ const getUserById = async (id) => {
     console.error("Error in getUserById:", error);
   }
 };
-const consoleLog = async () => {
+
+const mailerController = async (userId, message) => {
   try {
-    const aux = await cartModel.find({ _id: "6319f5bf0d6b16fd31848c14" });
-    console.log(aux);
+    const { email, firstname, lastname } = await usersModel.findById({
+      _id: userId,
+    });
+    await transporter.sendMail({
+      from: '"Testing Email" <sneaker.paradise.mail@gmail.com>',
+      to: email,
+      subject: `Testing Email for ${firstname} ${lastname}`,
+      html: `<b>${message}</b>`,
+    });
+    return;
   } catch (error) {
-    console.error(error);
+    return error;
   }
 };
+
+const newsletterSub = async (email) => {
+  try {
+    await transporter.sendMail({
+      from: '"Sneaker Paradise" <sneaker.paradise.mail@gmail.com>',
+      to: email,
+      subject: `Sneaker Paradise: Newsletter Subscription`,
+      html: `<h1>Welcome to Paradise!</h1b><br>
+           <h2>You have subscribed successfully to our newsletter.<h2>
+           <p>You will be one of the first people to now about our shoes on sale, new arrivals and more!</p><br>
+           <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
+    });
+    return;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   createUser,
   getAllShoes,
@@ -355,6 +382,8 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserById,
+  mailerController,
+  newsletterSub,
   getCartById,
   deleteShoeCart,
 };
