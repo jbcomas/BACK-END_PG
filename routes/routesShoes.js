@@ -40,7 +40,6 @@ router.get("/", async (req, res) => {
 
 router.post("/", (req, res) => {
   let { name, description, color, image, brand, price, stock } = req.body;
-
   const create = createShoe(
     name,
     description,
@@ -57,7 +56,6 @@ router.post("/", (req, res) => {
   console.log(successChalk("New sneaker was created"));
   res.status(200).send(create);
 });
-
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
