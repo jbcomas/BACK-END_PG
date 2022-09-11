@@ -3,9 +3,10 @@ const shoesModel = require("./shoesModel");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+  email: { type: String, unique: true, required: true },
+  idUser: { type: String, required: true},
   firstname: { type: String },
   lastname: { type: String },
-  email: { type: String, unique: true, required: true },
   manager: { type: Boolean, default: false },
   status: { type: String, enum: ["Enabled", "Disabled", "Eliminated"] },
   password: { type: String, maxlength: 64},

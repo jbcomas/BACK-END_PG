@@ -28,18 +28,18 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  let { firstname, lastname, email, manager, image, status, password } =
-    req.body;
+  let { email, idUser, firstname, lastname, manager, image, status, password  } = req.body;
   const create = await createUser(
+    email,
+    idUser,
     firstname,
     lastname,
-    email,
     manager,
     image,
     status,
     password
   );
-  if (email === "" || password === "" || status === "" || manager === "") {
+  if (idUser === "" || email === "") {
     return res.status(400).json({ error: "Some mandatory info is empty" });
   }
   res.status(200).send(create);

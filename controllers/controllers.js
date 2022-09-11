@@ -5,20 +5,22 @@ const cartModel = require("../models/cartModel.js");
 const transporter = require("../mailer.js");
 
 const createUser = async (
+  email,
+  idUser,
   firstname,
   lastname,
-  email,
   manager,
   image,
   status,
   password
 ) => {
   try {
-    usersModel.create(
+    await usersModel.create(
       {
+        email,
+        idUser,
         firstname,
         lastname,
-        email,
         manager,
         image,
         status,
@@ -350,7 +352,7 @@ const newsletterSub = async (email) => {
       from: '"Sneaker Paradise" <sneaker.paradise.mail@gmail.com>',
       to: email,
       subject: `Sneaker Paradise: Newsletter Subscription`,
-      html: `<h1>Welcome to Paradise!</h1b><br>
+      html: `<h1>Welcome to Paradise!</h1><br>
            <h2>You have subscribed successfully to our newsletter.<h2>
            <p>You will be one of the first people to now about our shoes on sale, new arrivals and more!</p><br>
            <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
@@ -359,6 +361,38 @@ const newsletterSub = async (email) => {
   } catch (error) {
     return error;
   }
+};
+
+const contactUsConfirmation = async (name, email) => {
+ try {
+   await transporter.sendMail({
+     from: '"Sneaker Paradise" <sneaker.paradise.mail@gmail.com>',
+     to: email,
+     subject: `Sneaker Paradise: Contact Us confirmation`,
+     html: `<h1>Hello, ${name}!</h1><br>
+          <h2>We have received your email to contact us.<h2>
+          <p>We shortly will write you back...</p><br>
+          <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
+   });
+   return;
+ } catch (error) {
+   return error;
+ }
+};
+
+const contactUsEmail = async (name, email, message) => {
+ try {
+   await transporter.sendMail({
+     from: `${name} <${email}>`,
+     to: 'sneaker.paradise.mail@gmail.com',
+     subject: `Contact Us from ${name}`,
+     html: `<h1>${name} wrote the following message:</h1><br>
+          <p>${message}</p><br>`,
+   });
+   return;
+ } catch (error) {
+   return error;
+ }
 };
 
 module.exports = {
@@ -386,4 +420,6 @@ module.exports = {
   newsletterSub,
   getCartById,
   deleteShoeCart,
+  contactUsConfirmation,
+  contactUsEmail
 };
