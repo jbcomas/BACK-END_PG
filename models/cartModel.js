@@ -8,7 +8,7 @@ const cartSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: usersModel },
   shoe: {type: Schema.Types.ObjectId, ref: shoesModel},
   size: { type: Number },
-  q:     { type: Number }
+  q: { type: Number }
 })
  
 
