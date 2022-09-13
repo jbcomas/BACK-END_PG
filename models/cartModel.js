@@ -5,10 +5,10 @@ const usersModel = require("./usersModel");
 const { Schema } = mongoose;
 
 const cartSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: usersModel },
-  shoe: {type: Schema.Types.ObjectId, ref: shoesModel},
-  size: { type: Number },
-  q: { type: Number }
+  userId: { type: Schema.Types.ObjectId },
+  idPayment: {type: String},
+  shoe: {type: Array},
+  amount:{type: Number}
 })
  
 

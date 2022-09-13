@@ -14,7 +14,6 @@ const shoesSchema = new Schema({
       q: { type: Number, required: true },
     },
   ],
-  inCart: { type: Boolean, default: false },
   onSale: { type: Boolean, default: false },
 });
 

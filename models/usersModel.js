@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+const cartModel = require("./cartModel");
 const shoesModel = require("./shoesModel");
 const { Schema } = mongoose;
 
@@ -13,9 +14,7 @@ const userSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   records: [
     {
-      shoeId: { type: Schema.Types.ObjectId, ref: shoesModel },
-      size: { type: Number },
-      q: { type: Number },
+      idPayment: {type: Schema.Types.ObjectId , ref: cartModel},
       dateOfPurchase: { type: Date, default: Date.now },
     },
   ],
