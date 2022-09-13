@@ -7,18 +7,18 @@ const brands = require("./routes/routesBrand.js");
 const users = require("./routes/routesUsers.js");
 const carrito = require("./routes/routesCart.js");
 const mail = require("./routes/routesMail.js");
-const stripe = require("./routes/routesStripe.js")
-
+const cors = require('cors')
 const server = express();
 
 server.name = "API";
 require("./db.js");
+server.use(cors())
 server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(bodyParser.json({ limit: "50mb" }));
 server.use(cookieParser());
 server.use(morgan("dev"));
 server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Origin: * "); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Credentials", "true");
   res.header(
     "Access-Control-Allow-Headers",
@@ -33,7 +33,7 @@ server.use("/users", users);
 server.use("/brands", brands);
 server.use("/cart", carrito);
 server.use("/mail", mail);
-server.use("/api", stripe);
+
 
 // Error catching endware.
 server.use((err, req, res, next) => {

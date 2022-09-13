@@ -173,10 +173,11 @@ const contactUsEmail = async (name, email, message) => {
 
 const getAllUsers = async () => {
   try {
-    const allUsers = await usersModel.find({}).populate({
-      path: "records.shoeId",
-      select: "name color brand image price",
-    });
+    const allUsers = await usersModel.find({})
+    // .populate({
+    //   path: "records.shoeId",
+    //   select: "name color brand image price",
+    // });
 
     return allUsers;
   } catch (error) {
@@ -293,14 +294,81 @@ const getCart = async () => {
   }
 };
 
-const addShoeCart = async (userId, shoeId, size, q) => {
+
+
+
+// TODO---------------------------------
+// TODO---------------------------------
+// TODO---------------------------------
+// TODO---------------------------------
+const addShoeCart = async (userId, id, shoe, amount) => {
   try {
-    await cartModel.create({ userId: userId, shoe: shoeId, size, q });
-    return { status: "POST: Carrito created" };
+    await cartModel.create({
+      userId: userId,
+      idPayment: id,
+      shoe,
+      amount,
+    });
+    const cart = await cartModel.find({
+      idPayment: id,
+    });
+
+    await usersModel.updateOne(
+      { _id: userId },
+      {
+        $push: {
+          records: {
+            idPayment: cart[0]._id,
+          },
+        },
+      }
+    );
+    shoe?.forEach(async function (shoe) {
+      await shoesModel.findOneAndUpdate(
+        { _id: shoe._id, "stock.size": shoe.size },
+        {
+          $inc: { "stock.$.q": -shoe.quantity },
+        }
+      );
+    });
+
+    return {message: 'succesfull payment'}
   } catch (error) {
     console.error("Error in addShoeCart:", error);
   }
 };
+// TODO---------------------------------
+// TODO---------------------------------
+// TODO---------------------------------
+// TODO---------------------------------
+
+// const emptyCart = async (id) => {
+//   try {
+//     await usersModel.updateOne(
+//       { _id: id },
+//       {
+//         $push: {
+//           records: {
+//             shoeId: shoe.shoe,
+//             size: shoe.q,
+//             q: shoe.q,
+//           },
+//         },
+//       }
+//     );
+
+//     insert?.forEach(async function (shoe) {
+//       await shoesModel.findOneAndUpdate(
+//         { _id: shoe.shoe, "stock.size": shoe.size },
+//         {
+//           $inc: { "stock.$.q": -shoe.q },
+//         }
+//       );
+//     });
+//   } catch (error) {
+//     console.error("Error in deleteProduct:", error);
+//   }
+// };
 
 const getCartById = async (id) => {
   try {
@@ -310,41 +378,6 @@ const getCartById = async (id) => {
     return result;
   } catch (error) {
     console.error("Error in getCartById:", error);
-  }
-};
-
-const emptyCart = async (id) => {
-  try {
-    const insert = await cartModel.find({ userId: id });
-
-    insert?.forEach(async function (shoe) {
-      console.log(shoe.shoe);
-      await usersModel.updateOne(
-        { _id: id },
-        {
-          $push: {
-            records: {
-              shoeId: shoe.shoe,
-              size: shoe.q,
-              q: shoe.q,
-            },
-          },
-        }
-      );
-    });
-    insert?.forEach(async function (shoe) {
-      await shoesModel.findOneAndUpdate(
-        { _id: shoe.shoe, "stock.size": shoe.size },
-        {
-          $inc: { "stock.$.q": -shoe.q },
-        }
-      );
-    });
-    await cartModel.deleteMany({ userId: id });
-
-    return { status: "empty cart" };
-  } catch (error) {
-    console.error("Error in deleteProduct:", error);
   }
 };
 
@@ -395,6 +428,22 @@ const getUserById = async (id) => {
     console.error("Error in getUserById:", error);
   }
 };
+
+
+// const log =  async ()=> {
+//   const aux = await usersModel.find(
+//     { _id: "631e9962eb99e6abf07e4181" },
+//     {
+//       $push: {
+//         records: {
+//           idPayment: cart[0]._id,
+//         },
+//       },
+//     }
+//   );
+//     console.log(aux);
+// }
+
 module.exports = {
   createUser,
   getAllShoes,
@@ -412,7 +461,6 @@ module.exports = {
   addShoeCart,
   putShoeInCart,
   getCart,
-  emptyCart,
   updateUser,
   deleteUser,
   getUserById,

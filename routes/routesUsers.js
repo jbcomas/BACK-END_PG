@@ -9,10 +9,14 @@ const {
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const allUsers = await getAllUsers();
-  allUsers.length
-    ? res.status(200).send(allUsers)
-    : res.status(404).send("Error in Users");
+try {
+	  const allUsers = await getAllUsers();
+	  allUsers.length
+	    ? res.status(200).send(allUsers)
+	    : res.status(404).send("Error in Users");
+} catch (error) {
+	console.error(error.message);
+}
 });
 
 router.get("/:id", async (req, res) => {
