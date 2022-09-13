@@ -9,62 +9,96 @@ const {
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const allUsers = await getAllUsers();
-  allUsers.length
-    ? res.status(200).send(allUsers)
-    : res.status(404).send("Error in Users");
+  try {
+    const allUsers = await getAllUsers();
+    if (allUsers) {
+      console.log(successChalk("Users shown"));
+      return res.status(200).send(allUsers);
+    }
+    console.log(errorChalk("Route error!"));
+    res.status(404).json({ error: error.message });
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.status(404).json({ error: error.message });
+  }
 });
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const userId = await getUserById(id);
-    if (id) {
-      userId.length && res.status(200).send(userId);
+    if (userId) {
+      console.log(successChalk("User by id shown"));
+      return res.status(200).send(userId);
     }
-  } catch (error) {
+    console.log(errorChalk("Route error!"));
     res.status(404).json({ error: "This shoe id doesn't exist" });
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.status(404).json({ error: error.message });
   }
 });
 
 router.post("/", async (req, res) => {
   let { firstname, lastname, email, manager, image, status, password } =
     req.body;
-  const create = await createUser(
-    firstname,
-    lastname,
-    email,
-    manager,
-    image,
-    status,
-    password
-  );
-  if (email === "" || password === "" || status === "" || manager === "") {
-    return res.status(400).json({ error: "Some mandatory info is empty" });
+  try {
+    const create = await createUser(
+      firstname,
+      lastname,
+      email,
+      manager,
+      image,
+      status,
+      password
+    );
+    if (email === "" || password === "" || status === "" || manager === "") {
+      console.log(errorChalk("User wasn't created"));
+      return res.status(400).json({ error: "Some mandatory info is empty" });
+    }
+    console.log(successChalk("New user was created"));
+    res.status(200).send(create);
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.status(404).json({ error: error.message });
   }
-  res.status(200).send(create);
 });
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const user = req.body;
-  if (
-    user.email === "" ||
-    user.password === "" ||
-    user.status === "" ||
-    user.manager === ""
-  ) {
-    return res.status(400).json({ error: "Some mandatory info is empty" });
+  try {
+    if (
+      user.email === "" ||
+      user.password === "" ||
+      user.status === "" ||
+      user.manager === ""
+    ) {
+      console.log(errorChalk("User wasn't modified"));
+      return res.status(400).json({ error: "Some mandatory info is empty" });
+    }
+    const update = await updateUser(id, user);
+    console.log(successChalk("User updated"));
+    res.status(200).send(update);
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.status(404).json({ error: error.message });
   }
-  const update = await updateUser(id, user);
-  res.status(200).send(update);
 });
 
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
-  if (id) {
-    const deleted = await deleteUser(id);
-    res.status(200).send(deleted);
+  try {
+    if (id) {
+      const deleted = await deleteUser(id);
+      console.log(successChalk("User deleted"));
+      return res.status(200).send(deleted);
+    }
+    console.log(errorChalk("Route error!"));
+    res.status(404).json({ error: error.message });
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.status(404).json({ error: error.message });
   }
 });
 
