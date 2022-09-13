@@ -1,8 +1,8 @@
 require("dotenv").config();
 const server = require("./app.js");
-const { conn } = require("./db.js");
-const SneaksAPI = require("sneaks-api");
-const sneaks = new SneaksAPI();
+//const { conn } = require("./db.js");
+//const SneaksAPI = require("sneaks-api");
+//const sneaks = new SneaksAPI();
 const {PORT} = process.env
 
 // const shoesModel = require("./models/shoesModel.js");
@@ -60,6 +60,6 @@ const {PORT} = process.env
 //   });
 // });
 
-server.listen(PORT, () => {
+server.listen(PORT || 3001, () => {
   console.log("%s listening at 3001");
 });

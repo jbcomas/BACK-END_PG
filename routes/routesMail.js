@@ -1,5 +1,8 @@
 const { Router } = require("express");
-const { mailerController } = require("../controllers/controllers.js");
+const {
+  mailerController,
+  newsletterSub,
+} = require("../controllers/controllers.js");
 const router = Router();
 
 router.post("/", async (req, res) => {
@@ -12,4 +15,13 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/newsletter", async (req, res) => {
+  const { email } = req.body;
+  try {
+    await newsletterSub(email);
+    res.status(200).json({ status: "Newsletter email sent" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 module.exports = router;

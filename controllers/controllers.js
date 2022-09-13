@@ -79,11 +79,11 @@ const getAllBrand = async () => {
 
 const getAllUsers = async () => {
   try {
-    const allUsers = await usersModel
-      .find(function (err, user) {
-        if (err) return console.error(err);
-      })
-      .clone();
+    const allUsers = await usersModel.find({}).populate({
+      path: "records.shoeId",
+      select: "name color brand image price",
+    });
+
     return allUsers;
   } catch (error) {
     console.error("Error in getAllUsers:", error);
@@ -198,66 +198,92 @@ const updateBrand = async (id, name) => {
     console.log(error);
   }
 };
+
 const getCart = async () => {
-  const cart = await cartModel
-    .find(function (err, result) {})
-    .clone()
-    .populate();
-  if (cart) return cart;
-  return "empty car";
+  try {
+    const cart = await cartModel.find().clone();
+    if (cart) return cart;
+    return "empty cart";
+  } catch (error) {
+    console.error("Error in getCart:", error);
+  }
 };
 
-const addShoeCart = async (id, ident, amount) => {
+const addShoeCart = async (userId, shoeId, size, q) => {
   try {
-    const shoe = await shoesModel.findById({ _id: id });
-    const { name, image, color, brand, price } = shoe;
-    const shoeInCart = await cartModel.findOne({ name });
-
-    if (!shoeInCart) {
-      cartModel.create(
-        {
-          name,
-          color,
-          image,
-          brand,
-          price,
-          amount,
-          size: ident,
-        },
-        function (err) {
-          if (err) return console.error(err);
-        }
-      );
-
-      await shoesModel.updateOne(
-        { _id: id, "stock._id": ident },
-        { $set: { "stock.$.q": amount, inCart: true } }
-      );
-
-      return "cargado al carrito";
-    }
-    if (shoeInCart) return "El producto ya esta en el carrito";
+    await cartModel.create({ userId: userId, shoe: shoeId, size, q });
+    return { status: "POST: Carrito created" };
   } catch (error) {
     console.error("Error in addShoeCart:", error);
   }
 };
 
-const deleteProduct = async (id) => {
-  const { name } = await shoesModel.findByIdAndUpdate(id, {
-    inCart: false,
-  });
-  await cartModel.findOneAndRemove({ name });
-  return "producto eliminado";
+const getCartById = async (id) => {
+  try {
+    const result = await cartModel
+      .find({ userId: id })
+      .populate("shoe", "name");
+    return result;
+  } catch (error) {
+    console.error("Error in getCartById:", error);
+  }
 };
 
-const putProduct = async (id, ident, amount) => {
-  const { name } = await shoesModel.findById({ _id: id });
-  await shoesModel.updateOne(
-    { _id: id, "stock._id": ident },
-    { $set: { "stock.$.q": amount } }
-  );
-  await cartModel.findOneAndUpdate({ name: name }, { amount: amount });
-  return "producto modificado";
+const emptyCart = async (id) => {
+  try {
+    const insert = await cartModel.find({ userId: id });
+
+    insert?.forEach(async function (shoe) {
+      console.log(shoe.shoe);
+      await usersModel.updateOne(
+        { _id: id },
+        {
+          $push: {
+            records: {
+              shoeId: shoe.shoe,
+              size: shoe.q,
+              q: shoe.q,
+            },
+          },
+        }
+      );
+    });
+    insert?.forEach(async function (shoe) {
+      await shoesModel.findOneAndUpdate(
+        { _id: shoe.shoe, "stock.size": shoe.size },
+        {
+          $inc: { "stock.$.q": -shoe.q },
+        }
+      );
+    });
+    await cartModel.deleteMany({ userId: id });
+
+    return { status: "empty cart" };
+  } catch (error) {
+    console.error("Error in deleteProduct:", error);
+  }
+};
+
+const putShoeInCart = async (userId, shoeId, size, q) => {
+  try {
+    await cartModel.updateOne(
+      { userId: userId, shoe: shoeId },
+      { $set: { size: size, q: q } },
+      { new: true }
+    );
+    return { status: "PUT: Carrito edited" };
+  } catch (error) {
+    console.error("Error in putShoeInCart:", error);
+  }
+};
+
+const deleteShoeCart = async (id, shoeId) => {
+  try {
+    await cartModel.deleteOne({ userId: id, shoe: shoeId });
+    return { status: "shoe deleted" };
+  } catch (error) {
+    console.error("Error in deleteShoeCart:", error);
+  }
 };
 
 const updateUser = async (id, user) => {
@@ -290,7 +316,10 @@ const deleteUser = async (id) => {
 
 const getUserById = async (id) => {
   try {
-    const user = await usersModel.findById(id);
+    const user = await usersModel.findById(id).populate({
+      path: "records.shoeId",
+      select: "name color brand image price",
+    });
     if (user) return [user];
     return "User not found";
   } catch (error) {
@@ -300,14 +329,33 @@ const getUserById = async (id) => {
 
 const mailerController = async (userId, message) => {
   try {
-    const {email, firstname, lastname} = await usersModel.findById({_id: userId})
+    const { email, firstname, lastname } = await usersModel.findById({
+      _id: userId,
+    });
     await transporter.sendMail({
       from: '"Testing Email" <sneaker.paradise.mail@gmail.com>',
-      to: email, 
+      to: email,
       subject: `Testing Email for ${firstname} ${lastname}`,
       html: `<b>${message}</b>`,
     });
-    return 
+    return;
+  } catch (error) {
+    return error;
+  }
+};
+
+const newsletterSub = async (email) => {
+  try {
+    await transporter.sendMail({
+      from: '"Sneaker Paradise" <sneaker.paradise.mail@gmail.com>',
+      to: email,
+      subject: `Sneaker Paradise: Newsletter Subscription`,
+      html: `<h1>Welcome to Paradise!</h1b><br>
+           <h2>You have subscribed successfully to our newsletter.<h2>
+           <p>You will be one of the first people to now about our shoes on sale, new arrivals and more!</p><br>
+           <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
+    });
+    return;
   } catch (error) {
     return error;
   }
@@ -328,11 +376,14 @@ module.exports = {
   getByName,
   updateBrand,
   addShoeCart,
-  putProduct,
+  putShoeInCart,
   getCart,
-  deleteProduct,
+  emptyCart,
   updateUser,
   deleteUser,
   getUserById,
   mailerController,
+  newsletterSub,
+  getCartById,
+  deleteShoeCart,
 };
