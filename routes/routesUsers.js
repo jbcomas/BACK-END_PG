@@ -7,6 +7,10 @@ const {
   deleteUser,
 } = require("../controllers/controllers");
 const router = Router();
+const chalk = require("chalk");
+const successChalk = chalk.green;
+const errorChalk = chalk.bold.red;
+const warningChalk = chalk.hex("#FFA500");
 
 router.get("/", async (req, res) => {
   try {
@@ -63,7 +67,6 @@ router.put("/:id", async (req, res) => {
   try {
     if (
       user.email === "" ||
-      user.password === "" ||
       user.status === "" ||
       user.manager === ""
     ) {

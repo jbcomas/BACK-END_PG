@@ -66,15 +66,15 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const shoeId = await getById(id);
-    if (id) {
+    if (shoeId.length) {
       console.log(successChalk("Shoes by id were shown"));
-      shoeId.length && res.status(200).send(shoeId);
+       return res.status(200).send(shoeId);
     }
     console.log(errorChalk("This shoe id doesn't exist"));
-    res.status(404).json({ error: error.message });
+    return res.status(404).json({ error: error.message });
   } catch (error) {
     console.log(errorChalk("Try/catch error!"));
-    res.status(404).json({ error: error.message });
+    return res.status(404).json({ error: error.message });
   }
 });
 

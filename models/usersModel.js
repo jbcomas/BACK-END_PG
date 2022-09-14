@@ -8,7 +8,7 @@ const userSchema = new Schema({
   firstname: { type: String },
   lastname: { type: String },
   manager: { type: Boolean, default: false },
-  status: { type: String, enum: ["Enabled", "Disabled", "Eliminated"] },
+  status: { type: String, enum: ["Enabled", "Disabled", "Eliminated"], default: "Enabled"},
   password: { type: String, maxlength: 64},
   createdAt: { type: Date, default: Date.now },
   records: [

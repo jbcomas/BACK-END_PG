@@ -335,7 +335,7 @@ const addShoeCart = async (uid, id, shoes, amount) => {
 
 
 //? historial de compra usuario
-const getCartById = async (id) => {
+const getCartByIdUser = async (id) => {
   try {
     const result = await cartModel
       .find({ userId: id })
@@ -382,9 +382,10 @@ const deleteUser = async (id) => {
 
 const getUserById = async (id) => {
   try {
-    const user = await usersModel.findById(id).populate({
-      path: "records.shoeId",
-      select: "name color brand image price",
+    const user = await usersModel.findById(id)
+    .populate({
+      path: "records.idPayment",
+      select: "shoe",
     });
     if (user) return [user];
     return "User not found";
@@ -416,7 +417,7 @@ module.exports = {
   getUserById,
   mailerController,
   newsletterSub,
-  getCartById,
+  getCartByIdUser,
   deleteShoeCart,
   contactUsConfirmation,
   contactUsEmail,
