@@ -7,18 +7,48 @@ const {
   emptyCart,
   deleteShoeCart,
 } = require("../controllers/controllers.js");
+const Stripe = require("stripe");
 
+const stripe = new Stripe(
+  "sk_test_51Lgvm7FNV3brqOrQcBGGJTYhREYOAa3bUfwMh16NYL404FFfC7ALHjIwu2LjdJ5EeznkkdUX4wlRequzhE4EzTMs00hjEt6ZZv"
+);
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const cart = await getCart();
-  res.json(cart);
+  try {
+    const cart = await getCart();
+    console.log(successChalk("Cart shown"));
+    return res.status(200).json(cart);
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.status(404).json({ error: error.message });
+  }
 });
 
 router.post("/", async (req, res) => {
   const { userId, shoeId, size, q } = req.body;
   const addShoe = await addShoeCart(userId, shoeId, size, q);
   return res.json(addShoe);
+});
+
+router.post("/checkout", async (req, res) => {
+  const { userId, id, shoe, amount } = req.body;
+
+  try {
+    const pay = await stripe.paymentIntents.create({
+      amount,
+      currency: "USD",
+      description: "shoes",
+      payment_method: id,
+      confirm: true,
+    });
+
+    const payment = addShoeCart(userId, id, shoe, amount);
+  
+    res.status(200).json({message: 'success pay'});
+  } catch (error) {
+    res.json({ message: error.raw.message });
+  }
 });
 
 router.get("/:id", async (req, res) => {

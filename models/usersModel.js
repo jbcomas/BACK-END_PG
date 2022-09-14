@@ -1,21 +1,19 @@
 var mongoose = require("mongoose");
-const shoesModel = require("./shoesModel");
+const cartModel = require("./cartModel");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
   email: { type: String, unique: true, required: true },
-  manager: { type: Boolean, required: true },
-  image: { type: String },
+  idUser: { type: String, required: true},
+  firstname: { type: String },
+  lastname: { type: String },
+  manager: { type: Boolean, default: false },
   status: { type: String, enum: ["Enabled", "Disabled", "Eliminated"] },
-  password: { type: String, maxlength: 64, required: true },
+  password: { type: String, maxlength: 64},
   createdAt: { type: Date, default: Date.now },
   records: [
     {
-      shoeId: { type: Schema.Types.ObjectId, ref: shoesModel },
-      size: { type: Number },
-      q: { type: Number },
+      idPayment: {type: Schema.Types.ObjectId , ref: cartModel},
       dateOfPurchase: { type: Date, default: Date.now },
     },
   ],

@@ -5,20 +5,22 @@ const cartModel = require("../models/cartModel.js");
 const transporter = require("../mailer.js");
 
 const createUser = async (
+  email,
+  idUser,
   firstname,
   lastname,
-  email,
   manager,
   image,
   status,
   password
 ) => {
   try {
-    usersModel.create(
+    await usersModel.create(
       {
+        email,
+        idUser,
         firstname,
         lastname,
-        email,
         manager,
         image,
         status,
@@ -77,11 +79,103 @@ const getAllBrand = async () => {
   }
 };
 
+const getByName = async (shoe) => {
+  try {
+    const shoes = await shoesModel.find({ name: { $regex: `.*${shoe}` } });
+    if (shoes.length) return shoes;
+    return "Shoe not found";
+  } catch (error) {
+    console.log("Error in getByName:", error);
+  }
+};
+
+const updateUser = async (id, user) => {
+  try {
+    if (id.length !== 24) {
+      return "User doesn't exist";
+    }
+    await usersModel.findByIdAndUpdate(id, user);
+    let update = await usersModel.findById(id);
+    if (update !== undefined && update !== null) return [update];
+    return "User doesn't exist: Object empty";
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const mailerController = async (userId, message) => {
+  try {
+    const { email, firstname, lastname } = await usersModel.findById({
+      _id: userId,
+    });
+    await transporter.sendMail({
+      from: '"Testing Email" <sneaker.paradise.mail@gmail.com>',
+      to: email,
+      subject: `Testing Email for ${firstname} ${lastname}`,
+      html: `<b>${message}</b>`,
+    });
+    return;
+  } catch (error) {
+    return error;
+  }
+};
+
+const newsletterSub = async (email) => {
+  try {
+    await transporter.sendMail({
+      from: '"Sneaker Paradise" <sneaker.paradise.mail@gmail.com>',
+      to: email,
+      subject: `Sneaker Paradise: Newsletter Subscription`,
+      html: `<h1>Welcome to Paradise!</h1><br>
+           <h2>You have subscribed successfully to our newsletter.<h2>
+           <p>You will be one of the first people to now about our shoes on sale, new arrivals and more!</p><br>
+           <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
+    });
+    return;
+  } catch (error) {
+    return error;
+  }
+};
+
+const contactUsConfirmation = async (name, email) => {
+  try {
+    await transporter.sendMail({
+      from: '"Sneaker Paradise" <sneaker.paradise.mail@gmail.com>',
+      to: email,
+      subject: `Sneaker Paradise: Contact Us confirmation`,
+      html: `<h1>Hello, ${name}!</h1><br>
+          <h2>We have received your email to contact us.<h2>
+          <p>We shortly will write you back...</p><br>
+          <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
+    });
+    return;
+  } catch (error) {
+    return error;
+  }
+};
+
+const contactUsEmail = async (name, email, message) => {
+  try {
+    await transporter.sendMail({
+      from: `${name} <${email}>`,
+      to: "sneaker.paradise.mail@gmail.com",
+      subject: `Contact Us from ${name}`,
+      html: `<h1>${name} wrote the following message:</h1><br>
+          <p>${message}</p><br>`,
+    });
+    return;
+  } catch (error) {
+    return error;
+  }
+};
+
+// !--------- MANAGER -------------------------------
+
 const getAllUsers = async () => {
   try {
     const allUsers = await usersModel.find({}).populate({
-      path: "records.shoeId",
-      select: "name color brand image price",
+      path: "records.idPayment",
+      select: "shoe amount",
     });
 
     return allUsers;
@@ -143,16 +237,6 @@ const createBrand = async (brand) => {
   }
 };
 
-const getByName = async (shoe) => {
-  try {
-    const shoes = await shoesModel.find({ name: { $regex: `.*${shoe}` } });
-    if (shoes.length) return shoes;
-    return "Shoe not found";
-  } catch (error) {
-    console.log("Error in getByName:", error);
-  }
-};
-
 const updateShoe = async (id, shoe) => {
   try {
     if (id.length !== 24) {
@@ -209,58 +293,55 @@ const getCart = async () => {
   }
 };
 
-const addShoeCart = async (userId, shoeId, size, q) => {
+// TODO---------------------------------
+
+const addShoeCart = async (uid, id, shoes, amount) => {
   try {
-    await cartModel.create({ userId: userId, shoe: shoeId, size, q });
-    return { status: "POST: Carrito created" };
+    await cartModel.create({
+      userId: uid,
+      idPayment: id,
+      shoe: shoes,
+      amount,
+    });
+    const cart = await cartModel.find({
+      idPayment: id,
+    });
+
+    await usersModel.updateOne(
+      { idUser: uid },
+      {
+        $push: {
+          records: {
+            idPayment: cart[0]._id,
+          },
+        },
+      }
+    );
+    shoes?.forEach(async function (shoe) {
+      await shoesModel.findOneAndUpdate(
+        { _id: shoe._id, "stock.size": shoe.size },
+        {
+          $inc: { "stock.$.q": -shoe.quantity },
+        }
+      );
+    });
+
+    return {message: 'succesfull payment'}
   } catch (error) {
     console.error("Error in addShoeCart:", error);
   }
 };
+// TODO---------------------------------
 
+
+//? historial de compra usuario
 const getCartById = async (id) => {
   try {
     const result = await cartModel
       .find({ userId: id })
-      .populate("shoe", "name");
     return result;
   } catch (error) {
     console.error("Error in getCartById:", error);
-  }
-};
-
-const emptyCart = async (id) => {
-  try {
-    const insert = await cartModel.find({ userId: id });
-
-    insert?.forEach(async function (shoe) {
-      console.log(shoe.shoe);
-      await usersModel.updateOne(
-        { _id: id },
-        {
-          $push: {
-            records: {
-              shoeId: shoe.shoe,
-              size: shoe.q,
-              q: shoe.q,
-            },
-          },
-        }
-      );
-    });
-    insert?.forEach(async function (shoe) {
-      await shoesModel.findOneAndUpdate(
-        { _id: shoe.shoe, "stock.size": shoe.size },
-        {
-          $inc: { "stock.$.q": -shoe.q },
-        }
-      );
-    });
-    await cartModel.deleteMany({ userId: id });
-
-    return { status: "empty cart" };
-  } catch (error) {
-    console.error("Error in deleteProduct:", error);
   }
 };
 
@@ -285,21 +366,6 @@ const deleteShoeCart = async (id, shoeId) => {
     console.error("Error in deleteShoeCart:", error);
   }
 };
-
-const updateUser = async (id, user) => {
-  try {
-    if (id.length !== 24) {
-      return "User doesn't exist";
-    }
-    await usersModel.findByIdAndUpdate(id, user);
-    let update = await usersModel.findById(id);
-    if (update !== undefined && update !== null) return [update];
-    return "User doesn't exist: Object empty";
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 const deleteUser = async (id) => {
   try {
     if (id.length !== 24) {
@@ -327,39 +393,6 @@ const getUserById = async (id) => {
   }
 };
 
-const mailerController = async (userId, message) => {
-  try {
-    const { email, firstname, lastname } = await usersModel.findById({
-      _id: userId,
-    });
-    await transporter.sendMail({
-      from: '"Testing Email" <sneaker.paradise.mail@gmail.com>',
-      to: email,
-      subject: `Testing Email for ${firstname} ${lastname}`,
-      html: `<b>${message}</b>`,
-    });
-    return;
-  } catch (error) {
-    return error;
-  }
-};
-
-const newsletterSub = async (email) => {
-  try {
-    await transporter.sendMail({
-      from: '"Sneaker Paradise" <sneaker.paradise.mail@gmail.com>',
-      to: email,
-      subject: `Sneaker Paradise: Newsletter Subscription`,
-      html: `<h1>Welcome to Paradise!</h1b><br>
-           <h2>You have subscribed successfully to our newsletter.<h2>
-           <p>You will be one of the first people to now about our shoes on sale, new arrivals and more!</p><br>
-           <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
-    });
-    return;
-  } catch (error) {
-    return error;
-  }
-};
 
 module.exports = {
   createUser,
@@ -378,7 +411,6 @@ module.exports = {
   addShoeCart,
   putShoeInCart,
   getCart,
-  emptyCart,
   updateUser,
   deleteUser,
   getUserById,
@@ -386,4 +418,6 @@ module.exports = {
   newsletterSub,
   getCartById,
   deleteShoeCart,
+  contactUsConfirmation,
+  contactUsEmail,
 };
