@@ -2,6 +2,7 @@ const shoesModel = require("../models/shoesModel.js");
 const usersModel = require("../models/usersModel.js");
 const brandsModel = require("../models/brandsModel.js");
 const cartModel = require("../models/cartModel.js");
+const reviewsModel = require("../models/reviewsModel");
 const transporter = require("../mailer.js");
 
 const createUser = async (
@@ -177,7 +178,6 @@ const getAllUsers = async () => {
       path: "records.idPayment",
       select: "shoe amount",
     });
-
     return allUsers;
   } catch (error) {
     console.error("Error in getAllUsers:", error);
@@ -306,7 +306,6 @@ const addShoeCart = async (uid, id, shoes, amount) => {
     const cart = await cartModel.find({
       idPayment: id,
     });
-
     await usersModel.updateOne(
       { idUser: uid },
       {
@@ -325,20 +324,15 @@ const addShoeCart = async (uid, id, shoes, amount) => {
         }
       );
     });
-
-    return {message: 'succesfull payment'}
+    return { message: "succesfull payment" };
   } catch (error) {
     console.error("Error in addShoeCart:", error);
   }
 };
-// TODO---------------------------------
 
-
-//? historial de compra usuario
 const getCartById = async (id) => {
   try {
-    const result = await cartModel
-      .find({ userId: id })
+    const result = await cartModel.find({ userId: id });
     return result;
   } catch (error) {
     console.error("Error in getCartById:", error);
@@ -393,6 +387,70 @@ const getUserById = async (id) => {
   }
 };
 
+const getReviewShoeUser = async (idUser, shoeId) => {
+  try {
+    if (idUser) {
+      const review = await reviewsModel.findOne({
+        idUser: idUser,
+        shoeId: shoeId,
+      });
+      if (review) {
+        return review;
+      } else {
+        return "User's review doesn't exist";
+      }
+    } else {
+      const shoeReviews = await reviewsModel.find({ shoeId: shoeId });
+      if (shoeReviews) {
+        return shoeReviews;
+      } else {
+        return "Shoe has no reviews";
+      }
+    }
+  } catch (error) {
+    console.error("Error in getReviewShoeUser:", error);
+  }
+};
+
+const createReview = async (idUser, shoeId, review, rating) => {
+  try {
+    const alreadyReviewed = await getReviewShoeUser(idUser, shoeId);
+    if (alreadyReviewed) return "User already reviewed this shoe";
+    await reviewsModel.create({
+      idUser: idUser,
+      shoeId: shoeId,
+      review: review,
+      rating: rating,
+    });
+    return "Review created";
+  } catch (error) {
+    console.error("Error in createReview:", error);
+  }
+};
+
+const editReview = async (idReview, review, rating) => {
+  try {
+    const reviewUpdated = await reviewsModel.updateOne(
+      { _id: idReview },
+      { $set: { review: review, rating: rating } },
+      { new: true }
+    );
+    return reviewUpdated.modifiedCount === 1
+      ? "Review updated successfully"
+      : "Review wasn't updated";
+  } catch (error) {
+    console.error("Error in createReview:", error);
+  }
+};
+
+const deleteReview = async (idReview) => {
+  try {
+    await reviewsModel.deleteOne({ _id: idReview });
+    return "Review successfully deleted";
+  } catch (error) {
+    console.error("Error in deleteReview:", error);
+  }
+};
 
 module.exports = {
   createUser,
@@ -420,4 +478,8 @@ module.exports = {
   deleteShoeCart,
   contactUsConfirmation,
   contactUsEmail,
+  getReviewShoeUser,
+  createReview,
+  editReview,
+  deleteReview,
 };

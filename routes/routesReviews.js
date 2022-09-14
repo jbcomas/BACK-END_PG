@@ -1,5 +1,10 @@
 const { Router } = require("express");
-const reviewsModel = require("../models/reviewsModel.js");
+const {
+  getReviewShoeUser,
+  createReview,
+  editReview,
+  deleteReview,
+} = require("../controllers/controllers.js");
 const chalk = require("chalk");
 const successChalk = chalk.green;
 const errorChalk = chalk.bold.red;
@@ -7,70 +12,59 @@ const warningChalk = chalk.hex("#FFA500");
 
 const router = Router();
 
-router.post("/:shoeId", async (req, res) => {
-  const { idUser, review, rating } = req.body;
-  const { shoeId } = req.params;
-  try {
-    await reviewsModel.create({
-      idUser: idUser,
-      shoeId: shoeId,
-      review: review,
-      rating: rating,
-    });
-    return res.send("Review created");
-  } catch (error) {
-   res.json({ message: error.raw.message });
-  }
-});
-
 //BUSCA Y DEVUELVE REVIEW DE UNA ZAPATILLA (ID), DE UN USUARIO(ID) EN CONCRETO
 //DEVUELVE TODAS LAS REVIEWS DE UNA ZAPATILLA
 router.get("/:shoeId", async (req, res) => {
   const { idUser } = req.body;
   const { shoeId } = req.params;
   try {
-    if (idUser) {
-      const review = await reviewsModel.findOne({
-        idUser: idUser,
-        shoeId: shoeId,
-      });
-      return res.send(review);
-    } else {
-      const shoeReviews = await reviewsModel.find({ shoeId: shoeId });
-      return res.send(shoeReviews);
-    }
+    const reviews = await getReviewShoeUser(idUser, shoeId);
+    console.log(successChalk("Reviews by id were shown"));
+    return res.send(reviews);
   } catch (error) {
-   res.json({ message: error.raw.message });
+    console.log(errorChalk("Try/catch error!"));
+    res.json({ message: error.raw.message });
   }
 });
 
-//BUSCA REVIEW POR ID DE LA REVIEW
+//CREA UNA REVIEW TENIENDO EL ID DE ZAPATILLA
+router.post("/:shoeId", async (req, res) => {
+  const { idUser, review, rating } = req.body;
+  const { shoeId } = req.params;
+  try {
+    const create = await createReview(idUser, shoeId, review, rating);
+    console.log(successChalk("Review was created"));
+    return res.send(create);
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.json({ message: error.raw.message });
+  }
+});
+
+//BUSCA POR ID DE LA REVIEW Y EDITA
 router.put("/exact/:idReview", async (req, res) => {
   const { idReview } = req.params;
   const { review, rating } = req.body;
   try {
-    const reviewUpdated = await reviewsModel.updateOne(
-      { _id: idReview },
-      { $set: { review: review, rating: rating } },
-      { new: true }
-    );
-    return res.send(
-      reviewUpdated.modifiedCount === 1
-        ? "Review updated successfully"
-        : "Review wasn't updated"
-    );
+    const reviewUpdated = await editReview(idReview, review, rating);
+    console.log(successChalk("Review was edited"));
+    return res.send(reviewUpdated);
   } catch (error) {
-   res.json({ message: error.raw.message });
+    console.log(errorChalk("Try/catch error!"));
+    res.json({ message: error.raw.message });
   }
 });
 
+//BUSCA REVIEW POR ID Y LA ELIMINA
 router.delete("/exact/:idReview", async (req, res) => {
   const { idReview } = req.params;
   try {
-    await reviewsModel.deleteOne({ _id: idReview });
-    return res.send("Review successfully deleted");
+    const deletedReview = await deleteReview(idReview);
+    console.log(successChalk("Review was deleted"));
+    return res.send(deletedReview);
   } catch (error) {
-   res.json({ message: error.raw.message });
+    console.log(errorChalk("Try/catch error!"));
+    res.json({ message: error.raw.message });
   }
 });
 

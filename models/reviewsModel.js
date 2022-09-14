@@ -6,8 +6,8 @@ const reviewsSchema = new Schema({
   idUser: { type: String, required: true },
   shoeId: { type: Schema.Types.ObjectId, ref: shoesModel },
   review: { type: String },
-  reviewDate: { type: Date, default: Date.now },
   rating: { type: Number },
+  reviewDate: { type: Date, default: Date.now },
 });
 
 const reviewsModel = mongoose.model("review", reviewsSchema);
