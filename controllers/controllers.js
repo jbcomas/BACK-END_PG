@@ -104,23 +104,6 @@ const updateUser = async (id, user) => {
   }
 };
 
-const mailerController = async (userId, message) => {
-  try {
-    const { email, firstname, lastname } = await usersModel.findById({
-      _id: userId,
-    });
-    await transporter.sendMail({
-      from: '"Testing Email" <sneaker.paradise.mail@gmail.com>',
-      to: email,
-      subject: `Testing Email for ${firstname} ${lastname}`,
-      html: `<b>${message}</b>`,
-    });
-    return;
-  } catch (error) {
-    return error;
-  }
-};
-
 const newsletterSub = async (email) => {
   try {
     await transporter.sendMail({
@@ -472,7 +455,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserById,
-  mailerController,
   newsletterSub,
   getCartById,
   deleteShoeCart,

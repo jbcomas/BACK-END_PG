@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const {
-  mailerController,
   newsletterSub,
   contactUsConfirmation,
   contactUsEmail,
@@ -10,18 +9,6 @@ const chalk = require("chalk");
 const successChalk = chalk.green;
 const errorChalk = chalk.bold.red;
 const warningChalk = chalk.hex("#FFA500");
-
-router.post("/", async (req, res) => {
-  const { userId, message } = req.body;
-  try {
-    await mailerController(userId, message);
-    console.log(successChalk("Email sent"));
-    res.status(200).json({ status: "Email sent" });
-  } catch (error) {
-    console.log(errorChalk("Try/catch error!"));
-    res.status(404).json({ error: error.message });
-  }
-});
 
 router.post("/newsletter", async (req, res) => {
   const { email } = req.body;
