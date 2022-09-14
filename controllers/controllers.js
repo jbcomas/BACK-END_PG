@@ -173,11 +173,10 @@ const contactUsEmail = async (name, email, message) => {
 
 const getAllUsers = async () => {
   try {
-    const allUsers = await usersModel.find({})
-    // .populate({
-    //   path: "records.shoeId",
-    //   select: "name color brand image price",
-    // });
+    const allUsers = await usersModel.find({}).populate({
+      path: "records.idPayment",
+      select: "shoe amount",
+    });
 
     return allUsers;
   } catch (error) {
@@ -294,19 +293,14 @@ const getCart = async () => {
   }
 };
 
+// TODO---------------------------------
 
-
-
-// TODO---------------------------------
-// TODO---------------------------------
-// TODO---------------------------------
-// TODO---------------------------------
-const addShoeCart = async (userId, id, shoe, amount) => {
+const addShoeCart = async (uid, id, shoes, amount) => {
   try {
     await cartModel.create({
-      userId: userId,
+      userId: uid,
       idPayment: id,
-      shoe,
+      shoe: shoes,
       amount,
     });
     const cart = await cartModel.find({
@@ -314,7 +308,7 @@ const addShoeCart = async (userId, id, shoe, amount) => {
     });
 
     await usersModel.updateOne(
-      { _id: userId },
+      { idUser: uid },
       {
         $push: {
           records: {
@@ -323,7 +317,7 @@ const addShoeCart = async (userId, id, shoe, amount) => {
         },
       }
     );
-    shoe?.forEach(async function (shoe) {
+    shoes?.forEach(async function (shoe) {
       await shoesModel.findOneAndUpdate(
         { _id: shoe._id, "stock.size": shoe.size },
         {
@@ -338,43 +332,13 @@ const addShoeCart = async (userId, id, shoe, amount) => {
   }
 };
 // TODO---------------------------------
-// TODO---------------------------------
-// TODO---------------------------------
-// TODO---------------------------------
 
-// const emptyCart = async (id) => {
-//   try {
-//     await usersModel.updateOne(
-//       { _id: id },
-//       {
-//         $push: {
-//           records: {
-//             shoeId: shoe.shoe,
-//             size: shoe.q,
-//             q: shoe.q,
-//           },
-//         },
-//       }
-//     );
 
-//     insert?.forEach(async function (shoe) {
-//       await shoesModel.findOneAndUpdate(
-//         { _id: shoe.shoe, "stock.size": shoe.size },
-//         {
-//           $inc: { "stock.$.q": -shoe.q },
-//         }
-//       );
-//     });
-//   } catch (error) {
-//     console.error("Error in deleteProduct:", error);
-//   }
-// };
-
+//? historial de compra usuario
 const getCartById = async (id) => {
   try {
     const result = await cartModel
       .find({ userId: id })
-      .populate("shoe", "name");
     return result;
   } catch (error) {
     console.error("Error in getCartById:", error);
@@ -429,20 +393,6 @@ const getUserById = async (id) => {
   }
 };
 
-
-// const log =  async ()=> {
-//   const aux = await usersModel.find(
-//     { _id: "631e9962eb99e6abf07e4181" },
-//     {
-//       $push: {
-//         records: {
-//           idPayment: cart[0]._id,
-//         },
-//       },
-//     }
-//   );
-//     console.log(aux);
-// }
 
 module.exports = {
   createUser,

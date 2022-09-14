@@ -5,10 +5,11 @@ const usersModel = require("./usersModel");
 const { Schema } = mongoose;
 
 const cartSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId },
+  userId: { type: String },
   idPayment: {type: String},
   shoe: {type: Array},
-  amount:{type: Number}
+  amount:{type: Number},
+  status: {type: String, enum: ["Pending", "Received"], default:"Pending" }
 })
  
 

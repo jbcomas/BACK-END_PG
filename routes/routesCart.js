@@ -42,7 +42,7 @@ router.post("/checkout", async (req, res) => {
   
     res.status(200).json({message: 'success pay'});
   } catch (error) {
-    res.json({ message: error });
+    res.json({ message: error.raw.message });
   }
 });
 
