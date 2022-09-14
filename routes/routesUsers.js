@@ -52,12 +52,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const user = req.body;
-  if (
-    user.email === "" ||
-    user.password === "" ||
-    user.status === "" ||
-    user.manager === ""
-  ) {
+  if (user.email === "" || user.status === "" || user.manager === "") {
     return res.status(400).json({ error: "Some mandatory info is empty" });
   }
   const update = await updateUser(id, user);
