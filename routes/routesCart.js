@@ -15,8 +15,14 @@ const stripe = new Stripe(
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const cart = await getCart();
-  res.json(cart);
+  try {
+    const cart = await getCart();
+    console.log(successChalk("Cart shown"));
+    return res.status(200).json(cart);
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.status(404).json({ error: error.message });
+  }
 });
 
 router.post("/", async (req, res) => {
