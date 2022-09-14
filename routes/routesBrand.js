@@ -7,6 +7,10 @@ const {
   createBrand,
 } = require("../controllers/controllers");
 const router = Router();
+const chalk = require("chalk");
+const successChalk = chalk.green;
+const errorChalk = chalk.bold.red;
+const warningChalk = chalk.hex("#FFA500");
 
 router.get("/", async (req, res) => {
   try {

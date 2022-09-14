@@ -8,6 +8,10 @@ const {
   deleteShoeCart,
 } = require("../controllers/controllers.js");
 const Stripe = require("stripe");
+const chalk = require("chalk");
+const successChalk = chalk.green;
+const errorChalk = chalk.bold.red;
+const warningChalk = chalk.hex("#FFA500");
 
 const stripe = new Stripe(
   "sk_test_51Lgvm7FNV3brqOrQcBGGJTYhREYOAa3bUfwMh16NYL404FFfC7ALHjIwu2LjdJ5EeznkkdUX4wlRequzhE4EzTMs00hjEt6ZZv"

@@ -6,6 +6,10 @@ const {
   contactUsEmail,
 } = require("../controllers/controllers.js");
 const router = Router();
+const chalk = require("chalk");
+const successChalk = chalk.green;
+const errorChalk = chalk.bold.red;
+const warningChalk = chalk.hex("#FFA500");
 
 router.post("/", async (req, res) => {
   const { userId, message } = req.body;
