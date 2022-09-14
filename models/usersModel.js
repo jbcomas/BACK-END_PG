@@ -1,6 +1,5 @@
 var mongoose = require("mongoose");
 const cartModel = require("./cartModel");
-const shoesModel = require("./shoesModel");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({

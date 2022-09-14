@@ -1,6 +1,4 @@
 var mongoose = require("mongoose");
-const shoesModel = require("./shoesModel");
-const usersModel = require("./usersModel");
 
 const { Schema } = mongoose;
 

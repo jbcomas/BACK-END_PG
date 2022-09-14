@@ -15,6 +15,5 @@ mongoose.connection
   });
 
 module.exports = module.exports = {
-  ...mongoose.models,
-  conn: mongoose,
+  ...mongoose.models
 };

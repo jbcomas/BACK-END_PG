@@ -36,7 +36,6 @@ router.post("/checkout", async (req, res) => {
       payment_method: id,
       confirm: true,
     });
-    console.log(pay);
 
     const payment = addShoeCart(userId, id, shoe, amount);
   

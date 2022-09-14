@@ -1,7 +1,6 @@
 require("dotenv").config();
 const server = require("./app.js");
 const {PORT} = process.env
-//const { conn } = require("./db.js");
 //const SneaksAPI = require("sneaks-api");
 //const sneaks = new SneaksAPI();
 

@@ -15,7 +15,7 @@ router.post("/:shoeId", async (req, res) => {
     });
     return res.send("Review created");
   } catch (error) {
-    console.error("Error in getById:", error);
+   res.json({ message: error.raw.message });
   }
 });
 
@@ -36,7 +36,7 @@ router.get("/:shoeId", async (req, res) => {
       return res.send(shoeReviews);
     }
   } catch (error) {
-    console.error("Error in getById:", error);
+   res.json({ message: error.raw.message });
   }
 });
 
@@ -56,7 +56,7 @@ router.put("/exact/:idReview", async (req, res) => {
         : "Review wasn't updated"
     );
   } catch (error) {
-    console.log(error);
+   res.json({ message: error.raw.message });
   }
 });
 
@@ -66,7 +66,7 @@ router.delete("/exact/:idReview", async (req, res) => {
     await reviewsModel.deleteOne({ _id: idReview });
     return res.send("Review successfully deleted");
   } catch (error) {
-    console.log(error);
+   res.json({ message: error.raw.message });
   }
 });
 
