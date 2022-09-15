@@ -1,77 +1,85 @@
 const { Router } = require("express");
 const {
-  getCart,
-  addShoeCart,
-  getCartById,
-  putShoeInCart,
-  emptyCart,
-  deleteShoeCart,
+	getCart,
+	addShoeCart,
+	getCartByIdUser,
+	updateStatusOrder,
+	getCartByOrder,
+	// putShoeInCart,
+	// deleteShoeCart,
 } = require("../controllers/controllers.js");
 const Stripe = require("stripe");
 
 const stripe = new Stripe(
-  "sk_test_51Lgvm7FNV3brqOrQcBGGJTYhREYOAa3bUfwMh16NYL404FFfC7ALHjIwu2LjdJ5EeznkkdUX4wlRequzhE4EzTMs00hjEt6ZZv"
+	"sk_test_51Lgvm7FNV3brqOrQcBGGJTYhREYOAa3bUfwMh16NYL404FFfC7ALHjIwu2LjdJ5EeznkkdUX4wlRequzhE4EzTMs00hjEt6ZZv"
 );
 const router = Router();
+const chalk = require("chalk");
+const successChalk = chalk.green;
+const errorChalk = chalk.bold.red;
+const warningChalk = chalk.hex("#FFA500");
 
 router.get("/", async (req, res) => {
-  try {
-    const cart = await getCart();
-    console.log(successChalk("Cart shown"));
-    return res.status(200).json(cart);
-  } catch (error) {
-    console.log(errorChalk("Try/catch error!"));
-    res.status(404).json({ error: error.message });
-  }
-});
-
-router.post("/", async (req, res) => {
-  const { userId, shoeId, size, q } = req.body;
-  const addShoe = await addShoeCart(userId, shoeId, size, q);
-  return res.json(addShoe);
+	try {
+		const cart = await getCart();
+		console.log(successChalk("Cart shown"));
+		return res.status(200).json(cart);
+	} catch (error) {
+		console.log(errorChalk("Try/catch error!"));
+		res.status(404).json({ error: error.message });
+	}
 });
 
 router.post("/checkout", async (req, res) => {
-  const { userId, id, shoe, amount } = req.body;
+	const { userId, id, shoes, amount, email } = req.body;
 
-  try {
-    const pay = await stripe.paymentIntents.create({
-      amount,
-      currency: "USD",
-      description: "shoes",
-      payment_method: id,
-      confirm: true,
-    });
+	try {
+		const pay = await stripe.paymentIntents.create({
+			amount,
+			currency: "USD",
+			description: "shoes",
+			payment_method: id,
+			confirm: true,
+		});
 
-    const payment = addShoeCart(userId, id, shoe, amount);
-  
-    res.status(200).json({message: 'success pay'});
-  } catch (error) {
-    res.json({ message: error.raw.message });
-  }
+		const payment = addShoeCart(userId, id, shoes, amount, email);
+
+		res.status(200).json({ message: "success pay" });
+	} catch (error) {
+		res.json({ message: error.raw.message });
+	}
 });
 
 router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await getCartById(id);
-  res.status(200).send(result);
+	const { id } = req.params;
+	const result = await getCartByIdUser(id);
+	res.status(200).send(result);
 });
 
-router.put("/", async (req, res) => {
-  const { userId, shoeId, size, q } = req.body;
-  const result = await putShoeInCart(userId, shoeId, size, q);
-  res.status(200).send(result);
+//? buscar una compra especifica
+
+router.get("/order/:idPayment", async (req, res) => {
+	const { idPayment } = req.params;
+	const order = await getCartByOrder(idPayment);
+	res.status(200).send(order);
 });
 
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await emptyCart(id);
-  res.status(200).json(result);
+//? Manager, para modificar el estado de la compra
+router.put("/order/:idPayment", async (req, res) => {
+	const { idPayment } = req.params;
+	const status = req.body;
+	try {
+		const update = await updateStatusOrder(idPayment, status);
+		if (update) {
+			console.log(successChalk("Order delivered "));
+			return res.status(200).send(update);
+		}
+		console.log(errorChalk("Route error!"));
+		res.status(404).json({ error: error.message });
+	} catch (error) {
+		console.log(errorChalk("Try/catch error!"));
+		res.status(404).json({ error: error.message });
+	}
 });
-router.delete("/deletecart/:id", async (req, res) => {
-  const { id } = req.params;
-  const { shoeId } = req.body;
-  const result = await deleteShoeCart(id, shoeId);
-  res.status(200).json(result);
-});
+
 module.exports = router;
