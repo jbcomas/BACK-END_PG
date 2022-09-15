@@ -384,7 +384,8 @@ const getReviewShoeUser = async (idUser, shoeId) => {
       }
     } else {
       const shoeReviews = await reviewsModel.find({ shoeId: shoeId });
-      if (shoeReviews) {
+      console.log(shoeReviews)
+      if (shoeReviews[0]) {
         return shoeReviews;
       } else {
         return "Shoe has no reviews";
@@ -398,7 +399,7 @@ const getReviewShoeUser = async (idUser, shoeId) => {
 const createReview = async (idUser, shoeId, review, rating) => {
   try {
     const alreadyReviewed = await getReviewShoeUser(idUser, shoeId);
-    if (alreadyReviewed) return "User already reviewed this shoe";
+    if( alreadyReviewed.idUser) return "User has already reviewed this shoe"
     await reviewsModel.create({
       idUser: idUser,
       shoeId: shoeId,
