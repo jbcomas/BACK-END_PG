@@ -8,6 +8,11 @@ const {
 } = require("../controllers/controllers");
 const router = Router();
 
+const chalk = require("chalk");
+const successChalk = chalk.green;
+const errorChalk = chalk.bold.red;
+const warningChalk = chalk.hex("#FFA500");
+
 router.get("/", async (req, res) => {
   try {
     const allBrand = await getAllBrand();
@@ -77,7 +82,7 @@ router.put("/:id", async (req, res) => {
 router.post("/", (req, res) => {
   let { name } = req.body;
   try {
-    createBrand(name);
+     createBrand(name);
     if (name === "") {
       console.log(errorChalk("Brand name is empty!"));
       return res.status(400).json({ error: "Brand name is empty!" });
