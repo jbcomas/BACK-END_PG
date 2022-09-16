@@ -380,28 +380,6 @@ const getCartByIdUser = async (id) => {
 		console.error("Error in getCartById:", error);
 	}
 };
-
-// const putShoeInCart = async (userId, shoeId, size, q) => {
-//   try {
-//     await cartModel.updateOne(
-//       { userId: userId, shoe: shoeId },
-//       { $set: { size: size, q: q } },
-//       { new: true }
-//     );
-//     return { status: "PUT: Carrito edited" };
-//   } catch (error) {
-//     console.error("Error in putShoeInCart:", error);
-//   }
-// };
-
-// const deleteShoeCart = async (id, shoeId) => {
-//   try {
-//     await cartModel.deleteOne({ userId: id, shoe: shoeId });
-//     return { status: "shoe deleted" };
-//   } catch (error) {
-//     console.error("Error in deleteShoeCart:", error);
-//   }
-// };
 const deleteUser = async (id) => {
 	try {
 		if (id.length !== 24) {
@@ -444,7 +422,6 @@ module.exports = {
 	getByName,
 	updateBrand,
 	addShoeCart,
-	// putShoeInCart,
 	getCart,
 	updateUser,
 	deleteUser,
@@ -452,7 +429,6 @@ module.exports = {
 	mailerController,
 	newsletterSub,
 	getCartByIdUser,
-	// deleteShoeCart,
 	contactUsConfirmation,
 	contactUsEmail,
 	updateStatusOrder,

@@ -5,8 +5,6 @@ const {
 	getCartByIdUser,
 	updateStatusOrder,
 	getCartByOrder,
-	// putShoeInCart,
-	// deleteShoeCart,
 } = require("../controllers/controllers.js");
 const Stripe = require("stripe");
 
