@@ -10,7 +10,7 @@ const cartSchema = new Schema({
 	amount: { type: Number },
 	status: { type: String, enum: ["Pending", "Received"], default: "Pending" },
 	date: {type: Date, default: new Date()},
-	date: {type: Date, default: Date()}
+	datess: {type: Date, default: Date()}
 });
 
 const cartModel = mongoose.model("cart", cartSchema);
