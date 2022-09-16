@@ -5,8 +5,6 @@ const {
 	getCartByIdUser,
 	updateStatusOrder,
 	getCartByOrder,
-	// putShoeInCart,
-	// deleteShoeCart,
 } = require("../controllers/controllers.js");
 const Stripe = require("stripe");
 
@@ -67,7 +65,7 @@ router.get("/order/:idPayment", async (req, res) => {
 //? Manager, para modificar el estado de la compra
 router.put("/order/:idPayment", async (req, res) => {
 	const { idPayment } = req.params;
-	const status = req.body;
+	const {status} = req.body;
 	try {
 		const update = await updateStatusOrder(idPayment, status);
 		if (update) {
@@ -75,7 +73,7 @@ router.put("/order/:idPayment", async (req, res) => {
 			return res.status(200).send(update);
 		}
 		console.log(errorChalk("Route error!"));
-		res.status(404).json({ error: error.message });
+		res.status(404).json({ error: "Error when modifying" });
 	} catch (error) {
 		console.log(errorChalk("Try/catch error!"));
 		res.status(404).json({ error: error.message });
