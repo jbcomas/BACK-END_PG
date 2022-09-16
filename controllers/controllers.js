@@ -356,18 +356,18 @@ const getCartByOrder = async (idPayment) => {
 	}
 };
 
-const updateStatusOrder = async (idPayment, status) => {
-	try {
-		const statusOrderUpdate = await cartModel.findOneAndUpdate(
-			idPayment,
-			status,
-			{ new: true }
-		);
-		console.log(statusOrderUpdate);
-		return statusOrderUpdate;
-	} catch (error) {
-		console.log(error);
-	}
+const updateStatusOrder = async (idPayment, state) => {
+    try {
+        const updateStatus = await cartModel.findOneAndUpdate(
+            { idPayment: idPayment },
+            {$set : {status: state} },
+			{new: true}
+          );
+          console.log(updateStatus);
+          return updateStatus
+} catch (error) {
+    console.log(error);
+}
 };
 // TODO---------------------------------
 
