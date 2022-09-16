@@ -311,7 +311,7 @@ const getCart = async () => {
 const addShoeCart = async (uid, id, shoes, amount, email) => {
 	try {
 		await cartModel.create({
-      email,
+            email,
 			userId: uid,
 			idPayment: id,
 			shoe: shoes,
