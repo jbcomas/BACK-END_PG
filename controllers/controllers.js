@@ -193,7 +193,6 @@ const createShoe = (name, description, color, image, brand, price, stock) => {
 const deleteShoe = async (id) => {
   try {
     if (id.length !== 24) {
-      console.log(id);
       return "Shoe never existed";
     }
     const deleted = await shoesModel.findByIdAndDelete(id);
@@ -346,7 +345,6 @@ const deleteShoeCart = async (id, shoeId) => {
 const deleteUser = async (id) => {
   try {
     if (id.length !== 24) {
-      console.log(id);
       return "User never existed";
     }
     const deleted = await usersModel.findByIdAndDelete(id);
@@ -384,11 +382,10 @@ const getReviewShoeUser = async (idUser, shoeId) => {
       }
     } else {
       const shoeReviews = await reviewsModel.find({ shoeId: shoeId });
-      console.log(shoeReviews)
       if (shoeReviews[0]) {
         return shoeReviews;
       } else {
-        return "Shoe has no reviews";
+        return [];
       }
     }
   } catch (error) {
