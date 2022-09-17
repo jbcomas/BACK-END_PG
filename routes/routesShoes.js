@@ -8,6 +8,16 @@ const {
 	getByName,
 	updateShoe,
 } = require("../controllers/controllers.js");
+const upload = require("../img/storage.js");
+const cloudinary = require('cloudinary')
+const fs = require('fs-extra')
+
+cloudinary.config({
+	cloud_name: "dj960qol0",
+	api_key: "521339563273244",
+	api_secret: "SCNE3oZRw9JYQjsckO7ANrPusYg"
+})
+
 const router = Router();
 const successChalk = chalk.green;
 const errorChalk = chalk.bold.red;
@@ -38,14 +48,20 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.post("/", async (req, res) => {
-	let { name, description, color, image, brand, price, stock } = req.body;
+router.post("/", upload.single('image') ,async (req, res) => {
+	const { name, description, color, brand, file,image, price, stock } = req.body;
+	console.log(req.file);
+	console.log(req.body);
 	try {
+
+		const result = await cloudinary.v2.uploader.upload(req.file.path)
+		console.log(result);
+		let path = result.url
 		const create = await createShoe(
 			name,
 			description,
 			color,
-			image,
+			path,
 			brand,
 			price,
 			stock
@@ -54,11 +70,12 @@ router.post("/", async (req, res) => {
 			console.log(errorChalk("Sneaker wasn't created"));
 			return res.status(400).json({ error: "Name or description is empty" });
 		}
+		await fs.unlink(req.file.path)
 		console.log(successChalk("New sneaker was created"));
 		res.status(200).send(create);
 	} catch (error) {
-		console.log(errorChalk("Try/catch error!"));
-		res.status(404).json({ error: error.message });
+		console.log(errorChalk(error));
+		res.status(404).json({ error: error});
 	}
 });
 
