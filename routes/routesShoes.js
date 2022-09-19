@@ -7,11 +7,13 @@ const {
 	deleteShoe,
 	getByName,
 	updateShoe,
+ getOnSale
 } = require("../controllers/controllers.js");
 const router = Router();
 const successChalk = chalk.green;
 const errorChalk = chalk.bold.red;
 const warningChalk = chalk.hex("#FFA500");
+const shoesModel = require("../models/shoesModel")
 
 router.get("/", async (req, res) => {
 	const { brand, name } = req.query;
@@ -37,6 +39,19 @@ router.get("/", async (req, res) => {
 		res.status(404).json({ error: error.message });
 	}
 });
+
+router.get("/onSale", async (req, res)=>{
+ try {
+     const onSale = await getOnSale()
+     if (onSale) {
+         return res.send(onSale)
+     }
+     return res.send("There are no sales")
+ } catch (error) {
+     console.log(errorChalk("Try/catch error!"));
+     res.status(404).json({ error: error.message });
+ }
+})
 
 router.post("/", async (req, res) => {
 	let { name, description, color, image, brand, price, stock } = req.body;
