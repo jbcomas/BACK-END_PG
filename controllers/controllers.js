@@ -369,6 +369,36 @@ const updateStatusOrder = async (idPayment, state) => {
     console.log(error);
 }
 };
+
+//* borrado logico de clientes
+
+const updateStatusClient = async(_id, status) =>{
+	try {
+		const updateStatus = await usersModel.findOneAndUpdate(
+			{_id: _id},
+			{$set : {status: status}},
+			{new: true}
+		)
+		return updateStatus
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+//* cuentas manager 
+
+const updateManager = async(_id, manager) =>{
+	try {
+		const updateStatus = await usersModel.findOneAndUpdate(
+			{_id: _id},
+			{$set : {manager: manager}},
+			{new: true}
+		)
+		return updateStatus
+	} catch (error) {
+		console.log(error)
+	}
+}
 // TODO---------------------------------
 
 //? historial de compra usuario
@@ -407,6 +437,20 @@ const getUserById = async (id) => {
 	}
 };
 
+const updateOnSale = async(_id, onSale) =>{
+	try {
+		const updateStatus = await shoesModel.findOneAndUpdate(
+			{_id: _id},
+			{$set : {onSale: onSale}},
+			{new: true}
+		)
+		return updateStatus
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+
 module.exports = {
 	createUser,
 	getAllShoes,
@@ -432,5 +476,8 @@ module.exports = {
 	contactUsConfirmation,
 	contactUsEmail,
 	updateStatusOrder,
+	updateStatusClient,
+	updateManager,
 	getCartByOrder,
+	updateOnSale
 };
