@@ -5,6 +5,7 @@ const {
 	createUser,
 	updateUser,
 	deleteUser,
+	getUserByEmail
 } = require("../controllers/controllers");
 const router = Router();
 const chalk = require("chalk");
@@ -36,7 +37,23 @@ router.get("/:id", async (req, res) => {
 			return res.status(200).send(userId);
 		}
 		console.log(errorChalk("Route error!"));
-		res.status(404).json({ error: "This shoe id doesn't exist" });
+		res.status(404).json({ error: "This user id doesn't exist" });
+	} catch (error) {
+		console.log(errorChalk("Try/catch error!"));
+		res.status(404).json({ error: error.message });
+	}
+});
+
+router.get("/email/:email", async (req, res) => {
+	const { email } = req.params;
+	try {
+		const userEmail = await getUserByEmail(email);
+		if (userEmail) {
+			console.log(successChalk("User by email shown"));
+			return res.status(200).send(userEmail);
+		}
+		console.log(errorChalk("Route error!"));
+		res.status(404).json({ error: "This email doesn't exist" });
 	} catch (error) {
 		console.log(errorChalk("Try/catch error!"));
 		res.status(404).json({ error: error.message });

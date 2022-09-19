@@ -500,6 +500,18 @@ const deleteReview = async (idReview) => {
   }
 };
 
+const getUserByEmail = async (email) => {
+	try {
+		const user = await usersModel.findOne({email:email}).populate({
+			path: "records.idPayment",
+			select: "shoe",
+		});
+		if (user) return [user];
+		return "User not found";
+	} catch (error) {
+		console.error("Error in getUserByEmail:", error);
+	}
+};
 
 module.exports = {
 	createUser,
@@ -528,9 +540,10 @@ module.exports = {
 	updateStatusClient,
 	updateManager,
 	getCartByOrder,
- getReviewShoeUser,
- createReview,
- editReview,
- deleteReview,
-	updateOnSale
+ 	getReviewShoeUser,
+ 	createReview,
+ 	editReview,
+ 	deleteReview,
+	updateOnSale,
+	getUserByEmail
 };
