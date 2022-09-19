@@ -11,6 +11,8 @@ const reviews = require("./routes/routesReviews.js");
 var cors = require('cors')
 
 const admin = require("./routes/routesAdmin");
+var cors = require('cors')
+
 
 const server = express();
 
