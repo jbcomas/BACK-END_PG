@@ -10,6 +10,9 @@ const mail = require("./routes/routesMail.js");
 const reviews = require("./routes/routesReviews.js");
 var cors = require('cors')
 
+const admin = require("./routes/routesAdmin");
+var cors = require('cors')
+
 
 const server = express();
 
@@ -37,6 +40,7 @@ server.use("/brands", brands);
 server.use("/cart", carrito);
 server.use("/mail", mail);
 server.use("/reviews", reviews);
+server.use("/admin", admin);
 
 // Error catching endware.
 server.use((err, req, res, next) => {

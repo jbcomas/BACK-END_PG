@@ -295,7 +295,7 @@ const getCart = async () => {
 const addShoeCart = async (uid, id, shoes, amount, email) => {
 	try {
 		await cartModel.create({
-      email,
+            email,
 			userId: uid,
 			idPayment: id,
 			shoe: shoes,
@@ -353,6 +353,36 @@ const updateStatusOrder = async (idPayment, state) => {
     console.log(error);
 }
 };
+
+//* borrado logico de clientes
+
+const updateStatusClient = async(_id, status) =>{
+	try {
+		const updateStatus = await usersModel.findOneAndUpdate(
+			{_id: _id},
+			{$set : {status: status}},
+			{new: true}
+		)
+		return updateStatus
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+//* cuentas manager 
+
+const updateManager = async(_id, manager) =>{
+	try {
+		const updateStatus = await usersModel.findOneAndUpdate(
+			{_id: _id},
+			{$set : {manager: manager}},
+			{new: true}
+		)
+		return updateStatus
+	} catch (error) {
+		console.log(error)
+	}
+}
 // TODO---------------------------------
 
 //? historial de compra usuario
@@ -390,6 +420,20 @@ const getUserById = async (id) => {
 		console.error("Error in getUserById:", error);
 	}
 };
+
+const updateOnSale = async(_id, onSale) =>{
+	try {
+		const updateStatus = await shoesModel.findOneAndUpdate(
+			{_id: _id},
+			{$set : {onSale: onSale}},
+			{new: true}
+		)
+		return updateStatus
+	} catch (error) {
+		console.log(error)
+	}
+}
+
 
 const getReviewShoeUser = async (idUser, shoeId) => {
   try {
@@ -481,9 +525,12 @@ module.exports = {
 	contactUsConfirmation,
 	contactUsEmail,
 	updateStatusOrder,
+	updateStatusClient,
+	updateManager,
 	getCartByOrder,
  getReviewShoeUser,
  createReview,
  editReview,
  deleteReview,
+	updateOnSale
 };
