@@ -26,6 +26,7 @@ router.put("/client/:_id", async (req, res) => {
 	}
 });
 
+//* ruta para ser manager
 router.put("/manager/:_id", async (req, res) => {
 	const { _id } = req.params;
 	const {manager} = req.body;
