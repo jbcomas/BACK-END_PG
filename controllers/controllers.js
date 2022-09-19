@@ -184,15 +184,16 @@ const getAllUsers = async () => {
   }
 };
 
-const createShoe = async (
+const createShoe = async ({
   name,
   description,
   color,
   path,
   brand,
   price,
-  stock
-) => {
+  size,
+  q,
+}) => {
   const duplicate = await shoesModel.find({ name });
   if (duplicate.length) return "sneaker with this name already exists";
   try {
@@ -204,7 +205,12 @@ const createShoe = async (
         image: path,
         brand,
         price,
-        stock,
+        stock: [
+          {
+            size,
+            q,
+          },
+        ],
       },
       function (err) {
         if (err) return console.error(err);
@@ -250,14 +256,30 @@ const createBrand = async (brand) => {
 };
 
 const updateShoe = async (id, shoe) => {
+  const { name, description, color, path, brand, price, idSize, size, q } =
+    shoe;
+
   try {
     if (id.length !== 24) {
       return "Shoe doesn't exist";
     }
-    await shoesModel.findByIdAndUpdate(id, shoe);
+    await shoesModel.findByIdAndUpdate(id, {
+      name,
+      description,
+      color,
+      brand,
+      price,
+    });
+    path !== undefined &&
+      (await shoesModel.findByIdAndUpdate(id, { image: path }));
     let update = await shoesModel.findById(id);
-    createBrand(shoe.brand);
-    if (shoe.brand) createBrand(shoe.brand);
+    if (idSize) {
+      await shoesModel.updateOne(
+        { _id: id, "stock._id": idSize },
+        { $set: { "stock.$.size": size, "stock.$.q": q } }
+      );
+    }
+    if (brand) createBrand(brand);
     if (update !== undefined && update !== null) return [update];
     return "Shoe doesn't exist: Object empty";
   } catch (error) {
@@ -306,8 +328,6 @@ const getCart = async () => {
   }
 };
 
-// TODO---------------------------------
-
 const addShoeCart = async (uid, id, shoes, amount, email) => {
   try {
     await cartModel.create({
@@ -349,7 +369,6 @@ const addShoeCart = async (uid, id, shoes, amount, email) => {
 const getCartByOrder = async (idPayment) => {
   try {
     const result = await cartModel.findOne({ idPayment: idPayment });
-    console.log("result " + result);
     return result;
   } catch (error) {
     console.error("Error in getCartByOrder:", error);
@@ -369,7 +388,6 @@ const updateStatusOrder = async (idPayment, state) => {
     console.log(error);
   }
 };
-// TODO---------------------------------
 
 //? historial de compra usuario
 const getCartByIdUser = async (id) => {
@@ -407,6 +425,16 @@ const getUserById = async (id) => {
   }
 };
 
+const addSize = async (id, body) => {
+  try {
+    const { size, q } = body;
+    await shoesModel.updateOne({ _id: id }, { $push: { stock: { size, q } } });
+    return "Add Size";
+  } catch (error) {
+    console.error("Error in addSize:", error);
+  }
+};
+
 module.exports = {
   createUser,
   getAllShoes,
@@ -433,4 +461,5 @@ module.exports = {
   contactUsEmail,
   updateStatusOrder,
   getCartByOrder,
+  addSize,
 };

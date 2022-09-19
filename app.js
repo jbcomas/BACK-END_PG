@@ -14,7 +14,7 @@ const server = express();
 server.name = "API";
 require("./db.js");
 server.use(bodyParser.urlencoded({ extended: false }));
-server.use(bodyParser.json({ limit: "50mb" }));
+server.use(bodyParser.json());
 server.use(cookieParser());
 server.use(morgan("dev"));
 

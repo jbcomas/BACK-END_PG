@@ -10,8 +10,8 @@ const shoesSchema = new Schema({
   price: { type: Number },
   stock: [
     {
-      size: { type: Number, required: true },
-      q: { type: Number, required: true },
+      size: { type: Number },
+      q: { type: Number  },
     },
   ],
   onSale: { type: Boolean, default: false },
