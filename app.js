@@ -9,15 +9,8 @@ const users = require("./routes/routesUsers.js");
 const carrito = require("./routes/routesCart.js");
 const mail = require("./routes/routesMail.js");
 const reviews = require("./routes/routesReviews.js");
-var cors = require('cors')
-
 const admin = require("./routes/routesAdmin");
-var cors = require('cors')
-
-
-const admin = require("./routes/routesAdmin");
-var cors = require('cors')
-
+var cors = require("cors");
 
 const server = express();
 server.name = "API";
@@ -26,7 +19,7 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 server.use(cookieParser());
 server.use(morgan("dev"));
-server.use(cors())
+server.use(cors());
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Credentials", "true");
