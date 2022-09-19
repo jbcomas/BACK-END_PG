@@ -2,6 +2,7 @@ const shoesModel = require("../models/shoesModel.js");
 const usersModel = require("../models/usersModel.js");
 const brandsModel = require("../models/brandsModel.js");
 const cartModel = require("../models/cartModel.js");
+const reviewsModel = require("../models/reviewsModel");
 const transporter = require("../mailer.js");
 
 const createUser = async (
@@ -100,23 +101,6 @@ const updateUser = async (id, user) => {
 		return "User doesn't exist: Object empty";
 	} catch (error) {
 		console.log(error);
-	}
-};
-
-const mailerController = async (userId, message) => {
-	try {
-		const { email, firstname, lastname } = await usersModel.findById({
-			_id: userId,
-		});
-		await transporter.sendMail({
-			from: '"Testing Email" <sneaker.paradise.mail@gmail.com>',
-			to: email,
-			subject: `Testing Email for ${firstname} ${lastname}`,
-			html: `<b>${message}</b>`,
-		});
-		return;
-	} catch (error) {
-		return error;
 	}
 };
 
@@ -451,6 +435,72 @@ const updateOnSale = async(_id, onSale) =>{
 }
 
 
+const getReviewShoeUser = async (idUser, shoeId) => {
+  try {
+    if (idUser) {
+      const review = await reviewsModel.findOne({
+        idUser: idUser,
+        shoeId: shoeId,
+      });
+      if (review) {
+        return review;
+      } else {
+        return "User's review doesn't exist";
+      }
+    } else {
+      const shoeReviews = await reviewsModel.find({ shoeId: shoeId });
+      if (shoeReviews[0]) {
+        return shoeReviews;
+      } else {
+        return [];
+      }
+    }
+  } catch (error) {
+    console.error("Error in getReviewShoeUser:", error);
+  }
+};
+
+const createReview = async (idUser, shoeId, review, rating) => {
+  try {
+    const alreadyReviewed = await getReviewShoeUser(idUser, shoeId);
+    if( alreadyReviewed.idUser) return "User has already reviewed this shoe"
+    await reviewsModel.create({
+      idUser: idUser,
+      shoeId: shoeId,
+      review: review,
+      rating: rating,
+    });
+    return "Review created";
+  } catch (error) {
+    console.error("Error in createReview:", error);
+  }
+};
+
+const editReview = async (idReview, review, rating) => {
+  try {
+    const reviewUpdated = await reviewsModel.updateOne(
+      { _id: idReview },
+      { $set: { review: review, rating: rating } },
+      { new: true }
+    );
+    return reviewUpdated.modifiedCount === 1
+      ? "Review updated successfully"
+      : "Review wasn't updated";
+  } catch (error) {
+    console.error("Error in createReview:", error);
+  }
+};
+
+const deleteReview = async (idReview) => {
+  try {
+    await reviewsModel.deleteOne({ _id: idReview });
+    return "Review successfully deleted";
+  } catch (error) {
+    console.error("Error in deleteReview:", error);
+  }
+};
+
+
 module.exports = {
 	createUser,
 	getAllShoes,
@@ -470,7 +520,6 @@ module.exports = {
 	updateUser,
 	deleteUser,
 	getUserById,
-	mailerController,
 	newsletterSub,
 	getCartByIdUser,
 	contactUsConfirmation,
@@ -479,5 +528,9 @@ module.exports = {
 	updateStatusClient,
 	updateManager,
 	getCartByOrder,
+ getReviewShoeUser,
+ createReview,
+ editReview,
+ deleteReview,
 	updateOnSale
 };
