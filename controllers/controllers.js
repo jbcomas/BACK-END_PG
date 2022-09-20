@@ -91,15 +91,15 @@ const getByName = async (shoe) => {
 };
 
 const getOnSale = async () => {
-	try {
-		const onSale = await shoesModel.find({ onSale: true })
-     if (onSale) {
-         return onSale
-     }
-     return res.send("There are no sales")
-	} catch (error) {
-		console.log("Error in getOnSale:", error);
-	}
+  try {
+    const onSale = await shoesModel.find({ onSale: true });
+    if (onSale) {
+      return onSale;
+    }
+    return res.send("There are no sales");
+  } catch (error) {
+    console.log("Error in getOnSale:", error);
+  }
 };
 
 const updateUser = async (id, user) => {
@@ -160,11 +160,11 @@ const contactUsConfirmation = async (name, email) => {
           <h2>We have received your email to contact us.<h2>
           <p>We shortly will write you back...</p><br>
           <p>See you around, <a href="https://front-oh21txcd1-fernando-bernal.vercel.app">Sneaker Paradise<a></p>`,
-		});
-		return;
-	} catch (error) {
-		return error;
-	}
+    });
+    return;
+  } catch (error) {
+    return error;
+  }
 };
 
 const contactUsEmail = async (name, email, message) => {
@@ -269,9 +269,9 @@ const createBrand = async (brand) => {
 };
 
 const updateShoe = async (id, shoe) => {
-  const { name, description, color, path, brand, price, size, q ,onSale} =
+  const { name, description, color, path, brand, price, size, q, onSale } =
     shoe;
-  
+
   try {
     if (id.length !== 24) {
       return "Shoe doesn't exist";
@@ -282,9 +282,10 @@ const updateShoe = async (id, shoe) => {
       color,
       brand,
       price,
-      onSale
+      onSale,
     });
-    path !== undefined && (await shoesModel.findByIdAndUpdate(id, { image: path }));
+    path !== undefined &&
+      (await shoesModel.findByIdAndUpdate(id, { image: path }));
     let update = await shoesModel.findById(id);
     if (size) {
       await shoesModel.updateOne(
@@ -354,7 +355,7 @@ const addShoeCart = async (uid, id, shoes, amount, email) => {
       idPayment: id,
     });
 
-   const aux = await usersModel.updateOne(
+    const aux = await usersModel.updateOne(
       { email: email },
       {
         $push: {
@@ -404,33 +405,33 @@ const updateStatusOrder = async (idPayment, state) => {
 
 //* borrado logico de clientes
 
-const updateStatusClient = async(_id, status) =>{
-	try {
-		const updateStatus = await usersModel.findOneAndUpdate(
-			{_id: _id},
-			{$set : {status: status}},
-			{new: true}
-		)
-		return updateStatus
-	} catch (error) {
-		console.log(error)
-	}
-}
+const updateStatusClient = async (_id, status) => {
+  try {
+    const updateStatus = await usersModel.findOneAndUpdate(
+      { _id: _id },
+      { $set: { status: status } },
+      { new: true }
+    );
+    return updateStatus;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-//* cuentas manager 
+//* cuentas manager
 
-const updateManager = async(_id, manager) =>{
-	try {
-		const updateStatus = await usersModel.findOneAndUpdate(
-			{_id: _id},
-			{$set : {manager: manager}},
-			{new: true}
-		)
-		return updateStatus
-	} catch (error) {
-		console.log(error)
-	}
-}
+const updateManager = async (_id, manager) => {
+  try {
+    const updateStatus = await usersModel.findOneAndUpdate(
+      { _id: _id },
+      { $set: { manager: manager } },
+      { new: true }
+    );
+    return updateStatus;
+  } catch (error) {
+    console.log(error);
+  }
+};
 // TODO---------------------------------
 
 //? historial de compra usuario
@@ -479,19 +480,18 @@ const addSize = async (id, body) => {
   }
 };
 
-const updateOnSale = async(_id, onSale) =>{
-	try {
-		const updateStatus = await shoesModel.findOneAndUpdate(
-			{_id: _id},
-			{$set : {onSale: onSale}},
-			{new: true}
-		)
-		return updateStatus
-	} catch (error) {
-		console.log(error)
-	}
-}
-
+const updateOnSale = async (_id, onSale) => {
+  try {
+    const updateStatus = await shoesModel.findOneAndUpdate(
+      { _id: _id },
+      { $set: { onSale: onSale } },
+      { new: true }
+    );
+    return updateStatus;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const getReviewShoeUser = async (idUser, shoeId) => {
   try {
@@ -521,7 +521,7 @@ const getReviewShoeUser = async (idUser, shoeId) => {
 const createReview = async (idUser, shoeId, review, rating) => {
   try {
     const alreadyReviewed = await getReviewShoeUser(idUser, shoeId);
-    if( alreadyReviewed.idUser) return "User has already reviewed this shoe"
+    if (alreadyReviewed.idUser) return "User has already reviewed this shoe";
     await reviewsModel.create({
       idUser: idUser,
       shoeId: shoeId,
@@ -559,51 +559,51 @@ const deleteReview = async (idReview) => {
 };
 
 const getUserByEmail = async (email) => {
-	try {
-		const user = await usersModel.findOne({email:email}).populate({
-			path: "records.idPayment",
-			select: "shoe",
-		});
-		if (user) return [user];
-		return "User not found";
-	} catch (error) {
-		console.error("Error in getUserByEmail:", error);
-	}
+  try {
+    const user = await usersModel.findOne({ email: email }).populate({
+      path: "records.idPayment",
+      select: "shoe",
+    });
+    if (user) return [user];
+    return "User not found";
+  } catch (error) {
+    console.error("Error in getUserByEmail:", error);
+  }
 };
 
 module.exports = {
-	createUser,
-	getAllShoes,
-	getAllBrand,
-	getAllUsers,
-	getById,
-	createShoe,
-	deleteShoe,
-	getBrandId,
-	deleteBrandId,
-	updateShoe,
-	createBrand,
-	getByName,
-	updateBrand,
-	addShoeCart,
-	getCart,
-	updateUser,
-	deleteUser,
-	getUserById,
-	newsletterSub,
-	getCartByIdUser,
-	contactUsConfirmation,
-	contactUsEmail,
-	updateStatusOrder,
-	updateStatusClient,
-	updateManager,
-	getCartByOrder,
- 	getReviewShoeUser,
- 	createReview,
- 	editReview,
- 	deleteReview,
-	updateOnSale,
+  createUser,
+  getAllShoes,
+  getAllBrand,
+  getAllUsers,
+  getById,
+  createShoe,
+  deleteShoe,
+  getBrandId,
+  deleteBrandId,
+  updateShoe,
+  createBrand,
+  getByName,
+  updateBrand,
+  addShoeCart,
+  getCart,
+  updateUser,
+  deleteUser,
+  getUserById,
+  newsletterSub,
+  getCartByIdUser,
+  contactUsConfirmation,
+  contactUsEmail,
+  updateStatusOrder,
+  updateStatusClient,
+  updateManager,
+  getCartByOrder,
+  getReviewShoeUser,
+  createReview,
+  editReview,
+  deleteReview,
+  updateOnSale,
   addSize,
-	getUserByEmail
- getOnSale
+  getUserByEmail,
+  getOnSale,
 };
