@@ -604,6 +604,6 @@ module.exports = {
  	deleteReview,
 	updateOnSale,
   addSize,
-	getUserByEmail
+	getUserByEmail,
  getOnSale
 };
