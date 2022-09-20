@@ -8,6 +8,8 @@ const users = require("./routes/routesUsers.js");
 const carrito = require("./routes/routesCart.js");
 const mail = require("./routes/routesMail.js");
 const reviews = require("./routes/routesReviews.js");
+const favorites = require("./routes/routesFavorites.js")
+
 var cors = require('cors')
 
 
@@ -37,6 +39,7 @@ server.use("/brands", brands);
 server.use("/cart", carrito);
 server.use("/mail", mail);
 server.use("/reviews", reviews);
+server.use("/favorites", favorites)
 
 // Error catching endware.
 server.use((err, req, res, next) => {

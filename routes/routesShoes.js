@@ -13,7 +13,6 @@ const router = Router();
 const successChalk = chalk.green;
 const errorChalk = chalk.bold.red;
 const warningChalk = chalk.hex("#FFA500");
-const shoesModel = require("../models/shoesModel")
 
 router.get("/", async (req, res) => {
 	const { brand, name } = req.query;
