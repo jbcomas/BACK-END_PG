@@ -90,6 +90,18 @@ const getByName = async (shoe) => {
   }
 };
 
+const getOnSale = async () => {
+	try {
+		const onSale = await shoesModel.find({ onSale: true })
+     if (onSale) {
+         return onSale
+     }
+     return res.send("There are no sales")
+	} catch (error) {
+		console.log("Error in getOnSale:", error);
+	}
+};
+
 const updateUser = async (id, user) => {
   try {
     if (id.length !== 24) {
@@ -130,7 +142,7 @@ const newsletterSub = async (email) => {
       html: `<h1>Welcome to Paradise!</h1><br>
            <h2>You have subscribed successfully to our newsletter.<h2>
            <p>You will be one of the first people to now about our shoes on sale, new arrivals and more!</p><br>
-           <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
+           <p>See you around, <a href="https://front-oh21txcd1-fernando-bernal.vercel.app">Sneaker Paradise<a></p>`,
     });
     return;
   } catch (error) {
@@ -147,12 +159,12 @@ const contactUsConfirmation = async (name, email) => {
       html: `<h1>Hello, ${name}!</h1><br>
           <h2>We have received your email to contact us.<h2>
           <p>We shortly will write you back...</p><br>
-          <p>See you around, <a href="http://localhost:3000">Sneaker Paradise<a></p>`,
-    });
-    return;
-  } catch (error) {
-    return error;
-  }
+          <p>See you around, <a href="https://front-oh21txcd1-fernando-bernal.vercel.app">Sneaker Paradise<a></p>`,
+		});
+		return;
+	} catch (error) {
+		return error;
+	}
 };
 
 const contactUsEmail = async (name, email, message) => {
@@ -593,4 +605,5 @@ module.exports = {
 	updateOnSale,
   addSize,
 	getUserByEmail
+ getOnSale
 };

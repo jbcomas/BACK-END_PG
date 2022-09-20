@@ -8,6 +8,7 @@ const {
   getByName,
   updateShoe,
   addSize,
+ getOnSale
 } = require("../controllers/controllers.js");
 const upload = require("../img/storage.js");
 const cloudinary = require("cloudinary");
@@ -49,6 +50,19 @@ router.get("/", async (req, res) => {
     res.status(404).json({ error: error.message });
   }
 });
+
+router.get("/onSale", async (req, res)=>{
+ try {
+     const onSale = await getOnSale()
+     if (onSale) {
+         return res.send(onSale)
+     }
+     return res.send("There are no sales")
+ } catch (error) {
+     console.log(errorChalk("Try/catch error!"));
+     res.status(404).json({ error: error.message });
+ }
+})
 
 router.post("/", upload.single("image"), async (req, res) => {
   let { name, description, color, brand, image, price, size, q } = req.body;
