@@ -257,9 +257,9 @@ const createBrand = async (brand) => {
 };
 
 const updateShoe = async (id, shoe) => {
-  const { name, description, color, path, brand, price, idSize, size, q } =
+  const { name, description, color, path, brand, price, size, q ,onSale} =
     shoe;
-
+  
   try {
     if (id.length !== 24) {
       return "Shoe doesn't exist";
@@ -270,14 +270,14 @@ const updateShoe = async (id, shoe) => {
       color,
       brand,
       price,
+      onSale
     });
-    path !== undefined &&
-      (await shoesModel.findByIdAndUpdate(id, { image: path }));
+    path !== undefined && (await shoesModel.findByIdAndUpdate(id, { image: path }));
     let update = await shoesModel.findById(id);
-    if (idSize) {
+    if (size) {
       await shoesModel.updateOne(
-        { _id: id, "stock._id": idSize },
-        { $set: { "stock.$.size": size, "stock.$.q": q } }
+        { _id: id, "stock._id": size },
+        { $set: { "stock.$.q": q } }
       );
     }
     if (brand) createBrand(brand);
@@ -342,8 +342,8 @@ const addShoeCart = async (uid, id, shoes, amount, email) => {
       idPayment: id,
     });
 
-    await usersModel.updateOne(
-      { idUser: uid },
+   const aux = await usersModel.updateOne(
+      { email: email },
       {
         $push: {
           records: {
