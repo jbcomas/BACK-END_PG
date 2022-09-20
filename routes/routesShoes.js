@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", upload.single("image"), async (req, res) => {
   let { name, description, color, brand, image, price, size, q } = req.body;
-  console.log(color);
+ 
   try {
     req.file === undefined &&
       res.status(400).send("you need to upload an image");
@@ -113,7 +113,7 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", upload.single("image"), async (req, res) => {
   const { id } = req.params;
-  const { name, description, color, path, brand, price, idSize, size, q } =
+  const { name, description, color, path, brand, price, size, q ,onSale} =
     req.body;
   const shoe = req.body;
   try {
@@ -136,10 +136,11 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       path,
       brand,
       price,
-      idSize,
       size,
       q,
+      onSale
     });
+    await fs.unlink(req.file.path);
     console.log(successChalk("Shoes by id were modified"));
     return res.status(200).send(aux);
   } catch (error) {
