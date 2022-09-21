@@ -245,7 +245,7 @@ const createShoe = async ({
 const deleteShoe = async (id) => {
 	try {
 		if (id.length !== 24) {
-			console.log(id);
+
 			return "Shoe never existed";
 		}
 		const deleted = await shoesModel.findByIdAndDelete(id);
@@ -405,7 +405,6 @@ const updateStatusOrder = async (idPayment, state) => {
 			{ $set: { status: state } },
 			{ new: true }
 		);
-		console.log(updateStatus);
 		return updateStatus;
 	} catch (error) {
 		console.log(error);
@@ -454,7 +453,6 @@ const getCartByIdUser = async (email) => {
 const deleteUser = async (id) => {
 	try {
 		if (id.length !== 24) {
-			console.log(id);
 			return "User never existed";
 		}
 		const deleted = await usersModel.findByIdAndDelete(id);
@@ -494,7 +492,7 @@ const deleteSize = async (id) => {
 			{},
 			{ $pull: { stock: { _id: id } } }
 		);
-		console.log(aux);
+
 		return "Size removed";
 	} catch (error) {
 		console.error("Error in deleteSize:", error);

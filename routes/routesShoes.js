@@ -166,7 +166,6 @@ router.put("/addSize/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
-    console.log(body);
     const add = await addSize(id, body);
     res.status(200).send(add);
   } catch (error) {
