@@ -9,6 +9,7 @@ const {
 } = require("../controllers/controllers");
 const router = Router();
 const chalk = require("chalk");
+const usersModel = require("../models/usersModel");
 const successChalk = chalk.green;
 const errorChalk = chalk.bold.red;
 const warningChalk = chalk.hex("#FFA500");
@@ -63,6 +64,13 @@ router.get("/email/:email", async (req, res) => {
 router.post("/", async (req, res) => {
 	let { email, idUser, firstname, lastname, manager, image, status, password } =
 		req.body;
+
+	let noDuplicated = await usersModel.findOne({email: email})
+console.log(noDuplicated)
+	if(noDuplicated){
+		res.send(`${email} logIn`)
+	}
+	else{
 	const create = await createUser(
 		email,
 		idUser,
@@ -77,7 +85,8 @@ router.post("/", async (req, res) => {
 		return res.status(400).json({ error: "Some mandatory info is empty" });
 	}
 	res.status(200).send(create);
-});
+}})
+;
 
 router.put("/:id", async (req, res) => {
 	const { id } = req.params;
