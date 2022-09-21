@@ -8,12 +8,12 @@ const {
   getByName,
   updateShoe,
   addSize,
- getOnSale
+  getOnSale,
+  deleteSize,
 } = require("../controllers/controllers.js");
 const upload = require("../img/storage.js");
 const cloudinary = require("cloudinary");
 const fs = require("fs-extra");
-const { json } = require("body-parser");
 
 cloudinary.config({
   cloud_name: "dj960qol0",
@@ -51,22 +51,22 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/onSale", async (req, res)=>{
- try {
-     const onSale = await getOnSale()
-     if (onSale) {
-         return res.send(onSale)
-     }
-     return res.send("There are no sales")
- } catch (error) {
-     console.log(errorChalk("Try/catch error!"));
-     res.status(404).json({ error: error.message });
- }
-})
+router.get("/onSale", async (req, res) => {
+  try {
+    const onSale = await getOnSale();
+    if (onSale) {
+      return res.send(onSale);
+    }
+    return res.send("There are no sales");
+  } catch (error) {
+    console.log(errorChalk("Try/catch error!"));
+    res.status(404).json({ error: error.message });
+  }
+});
 
 router.post("/", upload.single("image"), async (req, res) => {
   let { name, description, color, brand, image, price, size, q } = req.body;
- 
+
   try {
     req.file === undefined &&
       res.status(400).send("you need to upload an image");
@@ -127,7 +127,7 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", upload.single("image"), async (req, res) => {
   const { id } = req.params;
-  const { name, description, color, path, brand, price, size, q ,onSale} =
+  const { name, description, color, path, brand, price, size, q, onSale } =
     req.body;
   const shoe = req.body;
   try {
@@ -152,7 +152,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       price,
       size,
       q,
-      onSale
+      onSale,
     });
     await fs.unlink(req.file.path);
     console.log(successChalk("Shoes by id were modified"));
@@ -169,6 +169,18 @@ router.put("/addSize/:id", async (req, res) => {
     console.log(body);
     const add = await addSize(id, body);
     res.status(200).send(add);
+  } catch (error) {
+    console.log(errorChalk(error + "Try/catch error!"));
+    return res.status(400).json({ message: error.message });
+  }
+});
+
+router.put("/deleteSize/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const aux = await deleteSize(id);
+    res.status(200).send(aux);
   } catch (error) {
     console.log(errorChalk(error + "Try/catch error!"));
     return res.status(400).json({ message: error.message });

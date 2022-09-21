@@ -480,17 +480,18 @@ const addSize = async (id, body) => {
   }
 };
 
-const deleteSize = async (idSize) => {
-  const aux = await shoesModel.updateMany({ }, 
-     
-      { $pull: { stock:{_id:idSize}}}
-  );
-  console.log(aux);
+const deleteSize = async (id) => {
+  try {
+    const aux = await shoesModel.updateMany(
+      {},
+      { $pull: { stock: { _id: id } } }
+    );
+    console.log(aux);
+    return "Size removed";
+  } catch (error) {
+    console.error("Error in deleteSize:", error);
+  }
 };
-
-// setTimeout(() => {
-//   deleteSize("6329d27198e928e1fe157a55")
-// }, 5000);
 
 const updateOnSale = async (_id, onSale) => {
   try {
@@ -618,4 +619,5 @@ module.exports = {
   addSize,
   getUserByEmail,
   getOnSale,
+  deleteSize,
 };
