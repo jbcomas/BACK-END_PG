@@ -127,7 +127,7 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", upload.single("image"), async (req, res) => {
   const { id } = req.params;
-  const { name, description, color, path, brand, price, size, q, onSale } =
+  const { name, description, color, brand, price, size, q, onSale } =
     req.body;
   const shoe = req.body;
   try {

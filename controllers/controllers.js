@@ -215,13 +215,14 @@ const createShoe = async ({
 	const duplicate = await shoesModel.find({ name });
 	if (duplicate.length) return "sneaker with this name already exists";
 	try {
+    let aux = brand.toLowerCase();
 		shoesModel.create(
 			{
 				name,
 				description,
 				color,
 				image: path,
-				brand,
+				brand: aux,
 				price,
 				stock: [
 					{
@@ -259,9 +260,10 @@ const createBrand = async (brand) => {
 	try {
 		const duplicate = await brandsModel.find({ name: brand });
 		if (duplicate.length) return "Brand duplicate";
+    const aux = brand.toLowerCase();
 		brandsModel.create(
 			{
-				name: brand,
+				name: aux,
 			},
 			function (err) {
 				if (err) return console.error(err);
@@ -281,11 +283,12 @@ const updateShoe = async (id, shoe) => {
 		if (id.length !== 24) {
 			return "Shoe doesn't exist";
 		}
+    const aux = brand.toLowerCase();
 		await shoesModel.findByIdAndUpdate(id, {
 			name,
 			description,
 			color,
-			brand,
+			brand: aux,
 			price,
 			onSale,
 		});
@@ -328,7 +331,8 @@ const deleteBrandId = async (id) => {
 
 const updateBrand = async (id, name) => {
 	try {
-		const brandUpdate = await brandsModel.findByIdAndUpdate(id, name, {
+    const aux = name.toLowerCase()
+		const brandUpdate = await brandsModel.findByIdAndUpdate(id, aux, {
 			new: true,
 		});
 		return [brandUpdate];
