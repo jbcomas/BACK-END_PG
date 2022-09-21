@@ -65,12 +65,6 @@ router.post("/", async (req, res) => {
 	let { email, idUser, firstname, lastname, manager, image, status, password } =
 		req.body;
 
-	let noDuplicated = await usersModel.findOne({email: email})
-console.log(noDuplicated)
-	if(noDuplicated){
-		res.send(`${email} logIn`)
-	}
-	else{
 	const create = await createUser(
 		email,
 		idUser,
@@ -85,7 +79,7 @@ console.log(noDuplicated)
 		return res.status(400).json({ error: "Some mandatory info is empty" });
 	}
 	res.status(200).send(create);
-}})
+})
 ;
 
 router.put("/:id", async (req, res) => {
