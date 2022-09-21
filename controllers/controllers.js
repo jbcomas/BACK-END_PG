@@ -435,9 +435,9 @@ const updateManager = async (_id, manager) => {
 // TODO---------------------------------
 
 //? historial de compra usuario
-const getCartByIdUser = async (id) => {
+const getCartByIdUser = async (email) => {
   try {
-    const result = await cartModel.find({ userId: id });
+    const result = await cartModel.find({ email: email });
     return result;
   } catch (error) {
     console.error("Error in getCartById:", error);
