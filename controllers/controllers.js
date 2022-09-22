@@ -121,22 +121,6 @@ const updateUser = async (id, user) => {
 	}
 };
 
-const mailerController = async (userId, message) => {
-	try {
-		const { email, firstname, lastname } = await usersModel.findById({
-			_id: userId,
-		});
-		await transporter.sendMail({
-			from: '"Testing Email" <sneaker.paradise.mail@gmail.com>',
-			to: email,
-			subject: `Testing Email for ${firstname} ${lastname}`,
-			html: `<b>${message}</b>`,
-		});
-		return;
-	} catch (error) {
-		return error;
-	}
-};
 
 const newsletterSub = async (email) => {
 	try {
@@ -147,7 +131,7 @@ const newsletterSub = async (email) => {
 			html: `<h1>Welcome to Paradise!</h1><br>
            <h2>You have subscribed successfully to our newsletter.<h2>
            <p>You will be one of the first people to now about our shoes on sale, new arrivals and more!</p><br>
-           <p>See you around, <a href="https://front-oh21txcd1-fernando-bernal.vercel.app">Sneaker Paradise<a></p>`,
+           <p>See you around, <a href="https://front-h4aq04x18-fernando-bernal.vercel.app">Sneaker Paradise<a></p>`,
 		});
 		return;
 	} catch (error) {
@@ -164,7 +148,7 @@ const contactUsConfirmation = async (name, email) => {
 			html: `<h1>Hello, ${name}!</h1><br>
           <h2>We have received your email to contact us.<h2>
           <p>We shortly will write you back...</p><br>
-          <p>See you around, <a href="https://front-oh21txcd1-fernando-bernal.vercel.app">Sneaker Paradise<a></p>`,
+          <p>See you around, <a href="https://front-h4aq04x18-fernando-bernal.vercel.app">Sneaker Paradise<a></p>`,
 		});
 		return;
 	} catch (error) {
