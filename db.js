@@ -1,10 +1,11 @@
+require('dotenv').config();
 const mongoose = require("mongoose");
-const uri =
-	"mongodb+srv://m001-student:m001-mongodb-basics@sandbox.yjdlxrm.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGODB;
+
 
 mongoose.connect(uri, {
 	useNewUrlParser: true,
-	dbName: "sneakers",
+	dbName: "DisruptiveStudio",
 });
 
 mongoose.connection

@@ -2,17 +2,11 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
-
-const shoes = require("./routes/routesShoes.js");
-const brands = require("./routes/routesBrand.js");
 const users = require("./routes/routesUsers.js");
-const carrito = require("./routes/routesCart.js");
-const mail = require("./routes/routesMail.js");
-const reviews = require("./routes/routesReviews.js");
-const admin = require("./routes/routesAdmin");
-const favorites = require("./routes/routesFavorites.js")
+
 
 var cors = require("cors");
+const coinsModel = require("./models/coinsModel.js");
 
 const server = express();
 server.name = "API";
@@ -33,14 +27,9 @@ server.use((req, res, next) => {
   next();
 });
 
-server.use("/shoes", shoes);
+
 server.use("/users", users);
-server.use("/brands", brands);
-server.use("/cart", carrito);
-server.use("/mail", mail);
-server.use("/reviews", reviews);
-server.use("/favorites", favorites)
-server.use("/admin", admin);
+server.use("/coins", coinsModel);
 
 // Error catching endware.
 server.use((err, req, res, next) => {

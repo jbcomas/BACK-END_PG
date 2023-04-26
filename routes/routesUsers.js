@@ -62,7 +62,7 @@ router.get("/email/:email", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-	let { email, idUser, firstname, lastname, manager, image, status, password } =
+	let { email, idUser, firstname, lastname, password } =
 		req.body;
 
 	const create = await createUser(
@@ -70,9 +70,6 @@ router.post("/", async (req, res) => {
 		idUser,
 		firstname,
 		lastname,
-		manager,
-		image,
-		status,
 		password
 	);
 	if (idUser === "" || email === "") {
