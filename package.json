@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jbcomas/BACK-END_PG.git"
+    "url": "git+https://github.com/Fernando-Bernal/Disruptive-Studio.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jbcomas/BACK-END_PG/issues"
+    "url": "https://github.com/Fernando-Bernal/Disruptive-Studio/issues"
   },
-  "homepage": "https://github.com/jbcomas/BACK-END_PG#readme",
+  "homepage": "https://github.com/Fernando-Bernal/Disruptive-Studio#readme",
   "dependencies": {
     "body-parser": "^1.20.0",
     "chalk": "^4.1.2",
